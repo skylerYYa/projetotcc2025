@@ -1,0 +1,40 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    @apply scroll-smooth antialiased;
+  }
+  body {
+    @apply bg-[#732457] text-[#A64182]; /* Fundo roxo e texto roxo claro */
+    font-family: 'Inter', sans-serif;
+  }
+
+  /* Estilos de seleção de texto global */
+  ::selection {
+    @apply bg-[#A64182] text-white; /* Seleção com roxo claro */
+  }
+  ::-moz-selection {
+    @apply bg-[#A64182] text-white;
+  }
+
+}
+
+/* Scrollbar estilizada (opcional, funciona melhor em navegadores WebKit/Blink) */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  @apply bg-[#A64182] rounded-full; /* Fundo roxo da scrollbar */
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-[#5DA649]/60 rounded-full border-2 border-transparent bg-clip-content; /* Verde para barra de rolagem */
+}
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-[#5DA649]/80; /* Verde mais intenso no hover */
+}
+::-webkit-scrollbar-corner {
+  @apply bg-transparent;
+}

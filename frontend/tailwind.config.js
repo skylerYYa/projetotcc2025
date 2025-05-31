@@ -11,22 +11,21 @@ export default {
         sans: ['Inter', 'sans-serif'], // Fonte padrão
       },
       colors: {
-        'upliving-primary': { // Nosso verde/esmeralda principal
-          light: '#34d399', // emerald-400
-          DEFAULT: '#10b981', // emerald-500
-          dark: '#059669',  // emerald-600
-        },
-        'upliving-accent': { // Nosso índigo/roxo para acentos secundários
-          light: '#818cf8', // indigo-400
-          DEFAULT: '#6366f1', // indigo-500
-          dark: '#4f46e5',  // indigo-600
-        },
-        // Cores para modo escuro (exemplo, se for usar)
-        'upliving-dark-bg': '#111827',     // gray-900
-        'upliving-dark-card': '#1f2937',    // gray-800
-        'upliving-dark-text': '#d1d5db',    // gray-300
-        'upliving-dark-text-dim': '#9ca3af', // gray-400
-      },
+  'upliving-primary': { // Roxos como cor principal
+    light: '#A64182', // Roxo claro
+    DEFAULT: '#732457', // Roxo médio (principal)
+    dark: '#5A1B45',  // Roxo escuro (um tom mais escuro)
+  },
+  'upliving-accent': { // Verde usado em detalhes e botões
+    light: '#A3BF3B', // Verde claro
+    DEFAULT: '#5DA649', // Verde médio
+    dark: '#3D7A30',  // Verde escuro
+  },
+  'upliving-dark-bg': '#111827', // Fundo escuro
+  'upliving-dark-card': '#1f2937', // Cartões escuros
+  'upliving-dark-text': '#d1d5db', // Texto claro no modo escuro
+  'upliving-dark-text-dim': '#9ca3af', // Texto secundário no modo escuro
+},
       animation: {
         'pulse-border': 'pulse-border 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         'pulse-border-slow': 'pulse-border 3s ease-in-out infinite',

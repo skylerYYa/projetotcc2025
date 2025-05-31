@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Logo from '../../components/common/Logo';
 import { ArrowRightOnRectangleIcon, UserIcon, KeyIcon } from '@heroicons/react/24/outline';
 
-const adminLoginSideImageUrl = 'https://images.unsplash.com/photo-1553877522-c36980345825?auto=format&fit=crop&w=1470&q=80';
+// Importando a imagem PNG local
+const adminLoginSideImageUrl = new URL('../../assets/fundo.png', import.meta.url).href;
 
 const pageVariants = {
   initial: { opacity: 0, scale: 0.95 },
@@ -21,17 +22,19 @@ const pageTransition = {
 
 const AdminLoginPage = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const [username, setUsername] = useState(''); // Mudado de email para username para admin
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
   const handleAdminLogin = (e) => {
     e.preventDefault();
     setError('');
+
     if (username === 'admin' && password === 'password123') {
       localStorage.setItem('adminAuthToken', 'fakeAdminToken');
-      navigate(location.state?.from || '/admin/dashboard', { replace: true });
+
+      // Redireciona diretamente para a Dashboard após login bem-sucedido
+      navigate('/dashboard', { replace: true });
     } else {
       setError('Usuário ou senha de administrador inválidos.');
     }
@@ -47,7 +50,7 @@ const AdminLoginPage = () => {
       className="min-h-screen flex items-stretch text-slate-800 bg-slate-900"
     >
       <div
-        className="relative hidden lg:flex w-1/2 items-center justify-center bg-slate-800 bg-cover bg-no-repeat"
+        className="relative hidden lg:flex w-1/2 items-center justify-center bg-cover bg-no-repeat"
         style={{ backgroundImage: `url(${adminLoginSideImageUrl})` }}
       >
         <div className="absolute inset-0 bg-black opacity-50"></div>
@@ -55,23 +58,17 @@ const AdminLoginPage = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.2 }}
-          className="z-10 text-center p-10"
+          className="z-10 text-center p-10 flex flex-col items-center space-y-1"
         >
-          <Logo className="justify-center mb-8" iconSize="h-16 w-16" textSize="text-5xl" color="text-upliving-primary-light" />
-          <h1 className="text-3xl font-bold text-white mb-3 leading-tight drop-shadow-lg">
-            Painel de Controle UpLiving
-          </h1>
-          <p className="text-lg text-slate-300 drop-shadow-sm">
-            Gerenciamento centralizado para sua imobiliária.
-          </p>
+          <Logo className="justify-center mb-2" iconSize="h-32 w-32" />
         </motion.div>
       </div>
 
       <div className="lg:w-1/2 w-full flex items-center justify-center bg-slate-100 p-6 sm:p-12">
         <div className="w-full max-w-sm">
           <div className="text-center lg:text-left mb-10">
-             <div className="lg:hidden mb-8">
-                <Logo className="justify-center" iconSize="h-10 w-10" textSize="text-3xl" />
+            <div className="lg:hidden mb-8">
+              <Logo className="justify-center" iconSize="h-10 w-10" textSize="text-3xl" />
             </div>
             <h2 className="text-3xl font-bold text-slate-800">
               Acesso Administrativo
@@ -133,7 +130,7 @@ const AdminLoginPage = () => {
             </div>
           </motion.form>
           <p className="text-center text-xs text-slate-400 mt-8">
-            Este é um acesso restrito para administradores do sistema UpLiving.
+            Este é um acesso restrito para administradores.
           </p>
         </div>
       </div>
