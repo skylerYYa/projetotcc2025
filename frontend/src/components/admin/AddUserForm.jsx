@@ -97,9 +97,11 @@ const AddUserForm = ({ onSubmit, onCancel, initialData, isSubmitting }) => {
         <label htmlFor="role" className={labelClass}>Cargo*</label>
         <select id="role" value={role} onChange={e => setRole(e.target.value)} required className={inputClass}>
           <option value="">Selecione...</option>
-          <option value="admin">Admin</option>
-          <option value="developer">Developer</option>
-          <option value="student">Estudante</option>
+          <option value="Administrador">ADM</option>
+          <option value="Developer">Developer</option>
+          <option value="Estudante">Estudante</option>
+          <option value="Diretor(a)">Diretor(a)</option>
+          <option value="Coordenador(a)">Coordenador(a)</option>
         </select>
       </div>
 
