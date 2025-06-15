@@ -55,10 +55,10 @@ const AdminDashboardPage = () => {
         <div className="flex items-center space-x-4">
           <motion.button
             whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
-            onClick={() => navigate("/qr-code")}
+            onClick={() => navigate("/relatorio")}
             className="bg-[#a64182] hover:bg-[#732457] text-white font-semibold px-4 py-2 rounded-lg shadow-md flex items-center"
           >
-            <UsersIcon className="w-5 h-5 mr-2" /> QR Code
+            <UsersIcon className="w-5 h-5 mr-2" /> Relatórios
           </motion.button>
           <motion.button
             whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}

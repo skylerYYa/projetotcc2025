@@ -6,7 +6,7 @@ import { AnimatePresence } from 'framer-motion';
 // Componentes de página
 import AdminLoginPage from './pages/admin/AdminLoginPage';
 import AdminDashboardPage from './pages/admin/AdminDashboardPage';
-import QRCodePage from './pages/QrCodePage';
+import RelatorioPage from './pages/RelatorioPage';
 
 
 const ProtectedRoute = ({ children }) => {
@@ -27,7 +27,7 @@ const AppContent = () => {
         <Routes location={location} key={location.pathname}>
           <Route path="/login" element={<AdminLoginPage />} />
           <Route path="/dashboard" element={<ProtectedRoute><AdminDashboardPage /></ProtectedRoute>} />
-          <Route path="/qr-code" element={<ProtectedRoute><QRCodePage /></ProtectedRoute>} />
+          <Route path="/relatorio" element={<ProtectedRoute><RelatorioPage /></ProtectedRoute>} />
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
       </AnimatePresence>
