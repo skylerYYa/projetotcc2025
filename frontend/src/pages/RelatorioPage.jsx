@@ -1,21 +1,43 @@
-import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 import GraficoSemanal from "../components/graficos/GraficoSemanal";
+import { useState, useEffect } from "react";
+
+
 
 const RelatorioPage = () => {
   const navigate = useNavigate();
+  const dadosMock = [
+  {
+    diaSemana: "Segunda-feira",
+    periodo: "Manhã",
+    alunosPresentes: 500,
+    alunosComeram: 450,
+    repeticoes: 100,
+    pratosServidos: 600,
+    refeicao: "Farofa de Linguiça",
+  },
+];
+
+  const [dadosRefeicao, setDadosRefeicao] = useState(dadosMock);
+  useEffect(() => {
+  buscarDadosRefeicao()
+    .then((res) => {
+      if (res.data.length > 0) {
+        setDadosRefeicao(res.data); // Substitui os fictícios pelos reais
+      }
+    })
+    .catch((err) => {
+      console.warn("Erro ao conectar com o backend. Usando dados fictícios.", err);
+    });
+}, []);
+
+
   const [mostrarGraficos, setMostrarGraficos] = useState(true);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [mensagemModal, setMensagemModal] = useState("");
 
-  //  Adicionando informações fictícias para visualização inicial
-  const [dadosRefeicao, setDadosRefeicao] = useState([
-    { diaSemana: "Segunda-feira", periodo: "Manhã", alunosPresentes: 500, alunosComeram: 450, repeticoes: 100, refeicao: "Farofa de Linguiça", pratosServidos: 600 },
-    { diaSemana: "Segunda-feira", periodo: "Tarde", alunosPresentes: 480, alunosComeram: 430, repeticoes: 90, refeicao: "Arroz com Feijão", pratosServidos: 550 },
-    { diaSemana: "Segunda-feira", periodo: "Noite", alunosPresentes: 450, alunosComeram: 400, repeticoes: 80, refeicao: "Peixe", pratosServidos: 500 },
-  ]);
 
   //  Estado para armazenar os dados do formulário
   const [novoRegistro, setNovoRegistro] = useState({

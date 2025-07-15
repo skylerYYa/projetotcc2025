@@ -9,8 +9,13 @@ export const UserProvider = ({ children }) => {
   });
 
   useEffect(() => {
-    localStorage.setItem("usuarios", JSON.stringify(users)); 
-  }, [users]);
+  fetch("http://localhost:8080/usuario/findAll")
+    .then((res) => res.json())
+    .then((data) => {
+      setUsers(data);
+      localStorage.setItem("usuarios", JSON.stringify(data));
+    });
+}, []);
 
   const addUser = (newUserData) => {
   const newUserWithId = {
