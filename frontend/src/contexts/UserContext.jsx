@@ -1,8 +1,21 @@
 import React, { createContext, useState, useEffect, useContext } from "react";
+import { buscarUsuarios } from "../services/usuarioService";
+
 
 const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
+  const refreshUsersFromBackend = () => {
+  buscarUsuarios()
+    .then((res) => {
+      setUsers(res.data);
+      localStorage.setItem("usuarios", JSON.stringify(res.data));
+    })
+    .catch((err) => {
+      console.error("Erro ao buscar usuários:", err);
+    });
+};
+
   const [users, setUsers] = useState(() => {
     const storedUsers = localStorage.getItem("usuarios");
     return storedUsers ? JSON.parse(storedUsers) : []; 
@@ -60,12 +73,13 @@ export const UserProvider = ({ children }) => {
 
   return (
     <UserContext.Provider value={{
-      users,
-      addUser,
-      updateUser,
-      toggleUserStatus, 
-      deleteUser
-    }}>
+  users,
+  addUser,
+  updateUser,
+  toggleUserStatus,
+  deleteUser,
+  refreshUsersFromBackend 
+}}>
       {children}
     </UserContext.Provider>
   );

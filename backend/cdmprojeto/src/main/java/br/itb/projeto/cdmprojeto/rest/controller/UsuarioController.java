@@ -18,7 +18,7 @@ import br.itb.projeto.cdmprojeto.service.UsuarioService;
 
 @RestController
 @RequestMapping("/usuario")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:5173")
 public class UsuarioController {
 
 	private UsuarioService usuarioService;

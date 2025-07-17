@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 import GraficoSemanal from "../components/graficos/GraficoSemanal";
 import { useState, useEffect } from "react";
+import { cadastrarDadosRefeicao, buscarDadosRefeicao } from "../services/dadosRefeicaoService";
 
 
 
@@ -56,17 +57,35 @@ const RelatorioPage = () => {
 
   const [atualizarGraficos, setAtualizarGraficos] = useState(false);
 
-const handleAdicionarRegistro = () => {
-  if (novoRegistro.alunosPresentes && novoRegistro.alunosComeram && novoRegistro.repeticoes && novoRegistro.refeicao && novoRegistro.pratosServidos) {
-    const novoDados = [...dadosRefeicao, { ...novoRegistro, id: Date.now() }];
-setDadosRefeicao(novoDados); // 🔥 Atualizando corretamente!
-    // 🔥 Garantir atualização dos gráficos
-    setAtualizarGraficos(!atualizarGraficos);
+  const handleAdicionarRegistro = () => {
+  if (
+    novoRegistro.alunosPresentes &&
+    novoRegistro.alunosComeram &&
+    novoRegistro.repeticoes &&
+    novoRegistro.refeicao &&
+    novoRegistro.pratosServidos
+  ) {
+    cadastrarDadosRefeicao(novoRegistro)
+      .then(() => {
+        setMensagemModal(`Registro de ${novoRegistro.diaSemana} (${novoRegistro.periodo}) salvo com sucesso no banco!`);
+        setMostrarModal(true);
 
-    setMensagemModal(`Registro de ${novoRegistro.diaSemana} (${novoRegistro.periodo}) adicionado com sucesso!`);
-    setMostrarModal(true);
+        buscarDadosRefeicao().then((res) => setDadosRefeicao(res.data));
 
-    setNovoRegistro({ diaSemana: "", periodo: "", alunosPresentes: "", alunosComeram: "", repeticoes: "", refeicao: "", pratosServidos: "" });
+        setNovoRegistro({
+          diaSemana: "",
+          periodo: "",
+          alunosPresentes: "",
+          alunosComeram: "",
+          repeticoes: "",
+          refeicao: "",
+          pratosServidos: "",
+        });
+      })
+      .catch((err) => {
+        console.error("Erro ao salvar no banco:", err);
+        alert("Erro ao salvar. Verifique os dados ou a conexão.");
+      });
   } else {
     alert("Preencha todos os campos antes de adicionar!");
   }

@@ -11,7 +11,7 @@ import br.itb.projeto.cdmprojeto.service.RefeicaoService;
 
 @RestController
 @RequestMapping("/api/refeicoes")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:5173")
 public class RefeicaoController {
 
     @Autowired

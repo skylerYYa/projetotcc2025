@@ -11,7 +11,7 @@ import br.itb.projeto.cdmprojeto.service.DadosRefeicaoService;
 
 @RestController
 @RequestMapping("/api/dados-refeicao")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:5173")
 public class DadosRefeicaoController {
 
     @Autowired

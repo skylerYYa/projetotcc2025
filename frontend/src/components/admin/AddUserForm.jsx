@@ -1,6 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { PlusCircleIcon, XCircleIcon, ArrowPathIcon } from '@heroicons/react/24/solid';
+import { cadastrarUsuario } from "../../services/usuarioService";
+import { useUsers } from "../../context/UserContext"; 
+
+const { refreshUsersFromBackend } = useUsers();
+cadastrarUsuario(userData)
+  .then(() => {
+    alert("Usuário cadastrado com sucesso!");
+    refreshUsersFromBackend(); 
+    clearForm(false);
+  })
 
 const inputClass = "w-full px-4 py-2.5 border border-slate-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-upliving-primary focus:border-upliving-primary transition duration-150 text-sm placeholder:text-slate-400";
 const labelClass = "block text-sm font-medium text-slate-700 mb-1.5";
@@ -8,6 +18,7 @@ const labelClass = "block text-sm font-medium text-slate-700 mb-1.5";
 const AddUserForm = ({ onSubmit, onCancel, initialData, isSubmitting }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [senha, setSenha] = useState('');
   const [birthdate, setBirthdate] = useState('');
   const [role, setRole] = useState('');
   const [isActive, setIsActive] = useState(true);
@@ -45,25 +56,31 @@ const AddUserForm = ({ onSubmit, onCancel, initialData, isSubmitting }) => {
   };
   
   const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!name || !email || !birthdate || !role) {
-      alert('Por favor, preencha todos os campos obrigatórios.');
-      return;
-    }
-    const userData = {
-      name,
-      email,
-      birthdate,
-      role,
-      active: isActive,
-    };
-    
-    if (isEditing && initialData?.id) {
-      onSubmit({ ...userData, id: initialData.id });
-    } else {
-      onSubmit(userData);
-    }
-  };
+  e.preventDefault();
+  if (!name || !email || !birthdate || !role) {
+    alert('Por favor, preencha todos os campos obrigatórios.');
+    return;
+  }
+
+  const userData = {
+  nome: name,
+  email,
+  dataNascimento: birthdate,
+  cargo: role,
+  ativo: isActive,
+  senha: senha, 
+};
+
+  cadastrarUsuario(userData)
+    .then(() => {
+      alert("Usuário cadastrado com sucesso!");
+      clearForm(false);
+    })
+    .catch((err) => {
+      console.error("Erro ao cadastrar usuário:", err);
+      alert("Erro ao salvar no banco. Verifique os dados ou a conexão.");
+    });
+};
 
   return (
     <motion.form
@@ -87,6 +104,18 @@ const AddUserForm = ({ onSubmit, onCancel, initialData, isSubmitting }) => {
           <input type="email" id="email" value={email} onChange={e => setEmail(e.target.value)} required className={inputClass} />
         </div>
       </div>
+
+      <div>
+  <label htmlFor="senha" className={labelClass}>Senha*</label>
+  <input
+    type="password"
+    id="senha"
+    value={senha}
+    onChange={e => setSenha(e.target.value)}
+    required
+    className={inputClass}
+  />
+</div>
 
       <div>
         <label htmlFor="birthdate" className={labelClass}>Data de Nascimento*</label>
