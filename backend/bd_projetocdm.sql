@@ -1,4 +1,4 @@
-USE master IF EXISTS(select * from sys.databases where name='bd_projetocdm') 
+ï»¿USE master IF EXISTS(select * from sys.databases where name='bd_projetocdm') 
 DROP DATABASE bd_projetocdm
 GO 
 -- CRIAR UM BANCO DE DADOS
@@ -25,7 +25,7 @@ GO
 INSERT Usuario (nome, email, senha, nivelAcesso, foto, dataCadastro, statusUsuario)
 VALUES ('Fulano da Silva', 'fulano@email.com.br', 'MTIzNDU2Nzg=', 'ADMIN', NULL, GETDATE(), 'ATIVO')
 INSERT Usuario (nome, email, senha, nivelAcesso, foto, dataCadastro, statusUsuario)
-VALUES ('Beltrana de Sá', 'beltrana@email.com.br', 'MTIzNDU2Nzg=', 'USER', NULL, GETDATE(), 'ATIVO')
+VALUES ('Beltrana de Sa', 'beltrana@email.com.br', 'MTIzNDU2Nzg=', 'USER', NULL, GETDATE(), 'ATIVO')
 INSERT Usuario (nome, email, senha, nivelAcesso, foto, dataCadastro, statusUsuario)
 VALUES ('Sicrana de Oliveira', 'sicrana@email.com.br', 'MTIzNDU2Nzg=', 'USER', NULL, GETDATE(), 'INATIVO')
 INSERT Usuario (nome, email, senha, nivelAcesso, foto, dataCadastro, statusUsuario)
@@ -35,8 +35,8 @@ GO
 CREATE TABLE Refeicao 
 (
     id              INT IDENTITY,
-    diaSemana       VARCHAR(20) NOT NULL CHECK (DiaSemana IN ('Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira')),
-    periodo         VARCHAR(20) NOT NULL CHECK (Periodo IN ('Manhã', 'Tarde', 'Noite')),
+    diaSemana       VARCHAR(20) NOT NULL CHECK (DiaSemana IN ('Segunda-feira', 'Terca-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira')),
+    periodo         VARCHAR(20) NOT NULL CHECK (Periodo IN ('Manha', 'Tarde', 'Noite')),
     nomeRefeicao    VARCHAR(100) NOT NULL, 
 	composicao      VARCHAR(300) NOT NULL, 
 	usuario_id		INT	NOT NULL,
@@ -120,14 +120,10 @@ SELECT * FROM Mensagem
 SELECT * FROM Refeicao
 
 
-/* VERIFICAR CONEXÕES EXISTENTES */
+/* VERIFICAR CONEXï¿½ES EXISTENTES */
 /*
 SELECT * FROM sys.dm_exec_sessions
 WHERE database_id = DB_ID('bd_pizzaria_3d')
 AND host_name IS NOT NULL
 AND program_name LIKE 'Microsoft SQL Server Management Studio%'
 */
-
-
-
-
