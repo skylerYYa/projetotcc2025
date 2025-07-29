@@ -5,51 +5,48 @@ import GraficoSemanal from "../components/graficos/GraficoSemanal";
 import { useState, useEffect } from "react";
 import { cadastrarDadosRefeicao, buscarDadosRefeicao } from "../services/dadosRefeicaoService";
 
-
-
 const RelatorioPage = () => {
   const navigate = useNavigate();
   const dadosMock = [
-  {
-    diaSemana: "Segunda-feira",
-    periodo: "Manhã",
-    alunosPresentes: 500,
-    alunosComeram: 450,
-    repeticoes: 100,
-    pratosServidos: 600,
-    refeicao: "Farofa de Linguiça",
-  },
-];
+    {
+      diaSemana: "Segunda-feira",
+      periodo: "Manhã",
+      alunosPresentes: 500,
+      alunosComeram: 450,
+      repeticoes: 100,
+      pratosServidos: 600,
+      refeicao: "Farofa de Linguiça",
+    },
+  ];
 
   const [dadosRefeicao, setDadosRefeicao] = useState(dadosMock);
-  useEffect(() => {
-  buscarDadosRefeicao()
-    .then((res) => {
-      if (res.data.length > 0) {
-        setDadosRefeicao(res.data); // Substitui os fictícios pelos reais
-      }
-    })
-    .catch((err) => {
-      console.warn("Erro ao conectar com o backend. Usando dados fictícios.", err);
-    });
-}, []);
 
+  useEffect(() => {
+    buscarDadosRefeicao()
+      .then((res) => {
+        if (res.data.length > 0) {
+          setDadosRefeicao(res.data); // Substitui os fictícios pelos reais
+        }
+      })
+      .catch((err) => {
+        console.warn("Erro ao conectar com o backend. Usando dados fictícios.", err);
+      });
+  }, []);
 
   const [mostrarGraficos, setMostrarGraficos] = useState(true);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [mensagemModal, setMensagemModal] = useState("");
 
-
-  //  Estado para armazenar os dados do formulário
+  // Estado para armazenar os dados do formulário
   const [novoRegistro, setNovoRegistro] = useState({
-  diaSemana: "Segunda-feira",
-  periodo: "Manhã",
-  alunosPresentes: "",
-  alunosComeram: "",
-  repeticoes: "",
-  refeicao: "",
-  pratosServidos: "",
-});
+    diaSemana: "Segunda-feira",
+    periodo: "Manhã",
+    alunosPresentes: "",
+    alunosComeram: "",
+    repeticoes: "",
+    refeicao: "",
+    pratosServidos: "",
+  });
 
   const handleChange = (e) => {
     setNovoRegistro({ ...novoRegistro, [e.target.name]: e.target.value });
@@ -58,65 +55,75 @@ const RelatorioPage = () => {
   const [atualizarGraficos, setAtualizarGraficos] = useState(false);
 
   const handleAdicionarRegistro = () => {
-  if (
-    novoRegistro.alunosPresentes &&
-    novoRegistro.alunosComeram &&
-    novoRegistro.repeticoes &&
-    novoRegistro.refeicao &&
-    novoRegistro.pratosServidos
-  ) {
-    cadastrarDadosRefeicao(novoRegistro)
-      .then(() => {
-        setMensagemModal(`Registro de ${novoRegistro.diaSemana} (${novoRegistro.periodo}) salvo com sucesso no banco!`);
-        setMostrarModal(true);
+    if (
+      novoRegistro.alunosPresentes &&
+      novoRegistro.alunosComeram &&
+      novoRegistro.repeticoes &&
+      novoRegistro.refeicao &&
+      novoRegistro.pratosServidos
+    ) {
+      // CONVERSÃO DOS CAMPOS NUMÉRICOS PARA int
+      const registroCorrigido = {
+        diaSemana: novoRegistro.diaSemana,
+        periodo: novoRegistro.periodo,
+        alunosPresentes: parseInt(novoRegistro.alunosPresentes, 10),
+        alunosComeram: parseInt(novoRegistro.alunosComeram, 10),
+        repeticoes: parseInt(novoRegistro.repeticoes, 10),
+        pratosServidos: parseInt(novoRegistro.pratosServidos, 10),
+        refeicao: novoRegistro.refeicao,
+      };
 
-        buscarDadosRefeicao().then((res) => setDadosRefeicao(res.data));
+      cadastrarDadosRefeicao(registroCorrigido)
+        .then(() => {
+          setMensagemModal(`Registro de ${novoRegistro.diaSemana} (${novoRegistro.periodo}) salvo com sucesso no banco!`);
+          setMostrarModal(true);
 
-        setNovoRegistro({
-          diaSemana: "",
-          periodo: "",
-          alunosPresentes: "",
-          alunosComeram: "",
-          repeticoes: "",
-          refeicao: "",
-          pratosServidos: "",
+          buscarDadosRefeicao().then((res) => setDadosRefeicao(res.data));
+
+          setNovoRegistro({
+            diaSemana: "",
+            periodo: "",
+            alunosPresentes: "",
+            alunosComeram: "",
+            repeticoes: "",
+            refeicao: "",
+            pratosServidos: "",
+          });
+        })
+        .catch((err) => {
+          console.error("Erro ao salvar no banco:", err);
+          alert("Erro ao salvar. Verifique os dados ou a conexão.");
         });
-      })
-      .catch((err) => {
-        console.error("Erro ao salvar no banco:", err);
-        alert("Erro ao salvar. Verifique os dados ou a conexão.");
-      });
-  } else {
-    alert("Preencha todos os campos antes de adicionar!");
-  }
-};
+    } else {
+      alert("Preencha todos os campos antes de adicionar!");
+    }
+  };
 
   const calcularMediaPratosPorPeriodo = (dia, periodo) => {
-  const registrosPeriodo = dadosRefeicao.filter(d => d.diaSemana === dia && d.periodo === periodo);
-  if (registrosPeriodo.length === 0) return 0;
+    const registrosPeriodo = dadosRefeicao.filter(d => d.diaSemana === dia && d.periodo === periodo);
+    if (registrosPeriodo.length === 0) return 0;
 
-  const totalPratosServidos = registrosPeriodo.reduce((acc, item) => acc + parseInt(item.pratosServidos), 0);
+    const totalPratosServidos = registrosPeriodo.reduce((acc, item) => acc + parseInt(item.pratosServidos, 10), 0);
 
-  return totalPratosServidos;
-};
+    return totalPratosServidos;
+  };
 
-const calcularMediaPratosDia = (dia) => {
-  const registrosDoDia = dadosRefeicao.filter(d => d.diaSemana === dia);
-  if (registrosDoDia.length === 0) return 0;
+  const calcularMediaPratosDia = (dia) => {
+    const registrosDoDia = dadosRefeicao.filter(d => d.diaSemana === dia);
+    if (registrosDoDia.length === 0) return 0;
 
-  const totalPratosServidos = registrosDoDia.reduce((acc, item) => acc + parseInt(item.pratosServidos), 0);
+    const totalPratosServidos = registrosDoDia.reduce((acc, item) => acc + parseInt(item.pratosServidos, 10), 0);
 
-  return totalPratosServidos;
-};
+    return totalPratosServidos;
+  };
 
   return (
     <motion.div className="min-h-screen bg-white text-gray-900 flex flex-col items-center justify-start">
-      
       {/* Header atualizado */}
       <div className="w-full bg-[#732457] text-white px-8 py-4 flex items-center justify-between shadow-lg">
         <h1 className="text-2xl font-bold">Relatórios de Consumo & Estatísticas</h1>
-        <button 
-          onClick={() => navigate("/dashboard")} 
+        <button
+          onClick={() => navigate("/dashboard")}
           className="flex items-center bg-[#a64182] hover:bg-[#732457] text-white font-semibold px-4 py-2 rounded-lg shadow-md"
         >
           <ArrowLeftIcon className="w-5 h-5 mr-2" />
@@ -137,86 +144,86 @@ const calcularMediaPratosDia = (dia) => {
         </motion.div>
       )}
 
-     {/* Formulário para adicionar registros reais */}
-<motion.div className="mt-6 bg-gray-100 p-6 rounded-lg shadow-lg w-3/5">
-  <h2 className="text-lg font-bold text-[#732457]">Adicionar Registro Diário</h2>
+      {/* Formulário para adicionar registros reais */}
+      <motion.div className="mt-6 bg-gray-100 p-6 rounded-lg shadow-lg w-3/5">
+        <h2 className="text-lg font-bold text-[#732457]">Adicionar Registro Diário</h2>
 
-  <label className="block font-semibold mt-3">Dia da Semana:</label>
-  <select name="diaSemana" value={novoRegistro.diaSemana} onChange={handleChange} className="w-full p-2 border rounded-md">
-  {["Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira"].map((dia) => (
-    <option key={dia} value={dia}>{dia}</option>
-  ))}
-</select>
+        <label className="block font-semibold mt-3">Dia da Semana:</label>
+        <select name="diaSemana" value={novoRegistro.diaSemana} onChange={handleChange} className="w-full p-2 border rounded-md">
+          {["Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira"].map((dia) => (
+            <option key={dia} value={dia}>{dia}</option>
+          ))}
+        </select>
 
-  <label className="block font-semibold mt-3">Refeição:</label>
-  <input type="text" name="refeicao" value={novoRegistro.refeicao} onChange={handleChange} className="w-full p-2 border rounded-md"/>
+        <label className="block font-semibold mt-3">Refeição:</label>
+        <input type="text" name="refeicao" value={novoRegistro.refeicao} onChange={handleChange} className="w-full p-2 border rounded-md" />
 
-  <label className="block font-semibold mt-3">Período:</label>
-  <select name="periodo" value={novoRegistro.periodo} onChange={handleChange} className="w-full p-2 border rounded-md">
-    {["Manhã", "Tarde", "Noite"].map((p) => (
-      <option key={p} value={p}>{p}</option>
-    ))}
-  </select>
+        <label className="block font-semibold mt-3">Período:</label>
+        <select name="periodo" value={novoRegistro.periodo} onChange={handleChange} className="w-full p-2 border rounded-md">
+          {["Manhã", "Tarde", "Noite"].map((p) => (
+            <option key={p} value={p}>{p}</option>
+          ))}
+        </select>
 
-  <label className="block font-semibold mt-3">Alunos Presentes:</label>
-  <input type="number" name="alunosPresentes" value={novoRegistro.alunosPresentes} onChange={handleChange} className="w-full p-2 border rounded-md"/>
+        <label className="block font-semibold mt-3">Alunos Presentes:</label>
+        <input type="number" name="alunosPresentes" value={novoRegistro.alunosPresentes} onChange={handleChange} className="w-full p-2 border rounded-md" />
 
-  <label className="block font-semibold mt-3">Alunos que Comeram:</label>
-  <input type="number" name="alunosComeram" value={novoRegistro.alunosComeram} onChange={handleChange} className="w-full p-2 border rounded-md"/>
+        <label className="block font-semibold mt-3">Alunos que Comeram:</label>
+        <input type="number" name="alunosComeram" value={novoRegistro.alunosComeram} onChange={handleChange} className="w-full p-2 border rounded-md" />
 
-  <label className="block font-semibold mt-3">Repetições de Prato:</label>
-  <input type="number" name="repeticoes" value={novoRegistro.repeticoes} onChange={handleChange} className="w-full p-2 border rounded-md"/>
+        <label className="block font-semibold mt-3">Repetições de Prato:</label>
+        <input type="number" name="repeticoes" value={novoRegistro.repeticoes} onChange={handleChange} className="w-full p-2 border rounded-md" />
 
-  <label className="block font-semibold mt-3">Pratos Servidos:</label>
-  <input type="number" name="pratosServidos" value={novoRegistro.pratosServidos} onChange={handleChange} className="w-full p-2 border rounded-md"/>
+        <label className="block font-semibold mt-3">Pratos Servidos:</label>
+        <input type="number" name="pratosServidos" value={novoRegistro.pratosServidos} onChange={handleChange} className="w-full p-2 border rounded-md" />
 
-  <motion.button
-    whileHover={{ scale: 1.05 }}
-    whileTap={{ scale: 0.97 }}
-    onClick={handleAdicionarRegistro}
-    className="w-full mt-4 bg-[#4CAF50] hover:bg-[#388E3C] text-white py-3 rounded-lg shadow-md"
-  >
-    Adicionar Registro
-  </motion.button>
-</motion.div>
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.97 }}
+          onClick={handleAdicionarRegistro}
+          className="w-full mt-4 bg-[#4CAF50] hover:bg-[#388E3C] text-white py-3 rounded-lg shadow-md"
+        >
+          Adicionar Registro
+        </motion.button>
+      </motion.div>
 
       {/* Gráficos por dia da semana */}
-{mostrarGraficos && (
-  <>
-    {[...new Set(dadosRefeicao.map(d => d.diaSemana))].map((dia) => (
-      <motion.div key={dia} className="mt-8 bg-gray-100 p-6 rounded-lg shadow-lg w-3/5">
-        <h2 className="text-lg font-bold text-[#732457] mb-4">
-          {dia} - {dadosRefeicao.find(d => d.diaSemana === dia)?.refeicao || "Refeição Não Definida"}
-        </h2>
-        
-        {/* Exibir gráfico com dados atualizados */}
-        <GraficoSemanal dados={dadosRefeicao.filter(d => d.diaSemana === dia)} />
+      {mostrarGraficos && (
+        <>
+          {[...new Set(dadosRefeicao.map(d => d.diaSemana))].map((dia) => (
+            <motion.div key={dia} className="mt-8 bg-gray-100 p-6 rounded-lg shadow-lg w-3/5">
+              <h2 className="text-lg font-bold text-[#732457] mb-4">
+                {dia} - {dadosRefeicao.find(d => d.diaSemana === dia)?.refeicao || "Refeição Não Definida"}
+              </h2>
 
-        {/* Exibir média por período */}
-        <div className="mt-4 bg-white p-4 rounded-lg shadow-lg text-center">
-          <h3 className="text-md font-bold text-[#732457]">Média de Pratos Servidos por Período</h3>
-          <p className="text-lg font-semibold text-[#a64182]">
-              Manhã: {calcularMediaPratosPorPeriodo(dia, "Manhã")} pratos
-          </p>
-          <p className="text-lg font-semibold text-[#a64182]">
-              Tarde: {calcularMediaPratosPorPeriodo(dia, "Tarde")} pratos
-          </p>
-          <p className="text-lg font-semibold text-[#a64182]">
-              Noite: {calcularMediaPratosPorPeriodo(dia, "Noite")} pratos
-          </p>
-        </div>
+              {/* Exibir gráfico com dados atualizados */}
+              <GraficoSemanal dados={dadosRefeicao.filter(d => d.diaSemana === dia)} />
 
-        {/* Exibir média total do dia */}
-        <div className="mt-2 bg-white p-4 rounded-lg shadow-lg text-center">
-          <h3 className="text-md font-bold text-[#732457]">Média Total de Pratos Servidos no Dia</h3>
-          <p className="text-lg font-semibold text-[#a64182]">
-              {calcularMediaPratosDia(dia)} pratos no total
-          </p>
-        </div>
-      </motion.div>
-    ))}
-  </>
-)}
+              {/* Exibir média por período */}
+              <div className="mt-4 bg-white p-4 rounded-lg shadow-lg text-center">
+                <h3 className="text-md font-bold text-[#732457]">Média de Pratos Servidos por Período</h3>
+                <p className="text-lg font-semibold text-[#a64182]">
+                  Manhã: {calcularMediaPratosPorPeriodo(dia, "Manhã")} pratos
+                </p>
+                <p className="text-lg font-semibold text-[#a64182]">
+                  Tarde: {calcularMediaPratosPorPeriodo(dia, "Tarde")} pratos
+                </p>
+                <p className="text-lg font-semibold text-[#a64182]">
+                  Noite: {calcularMediaPratosPorPeriodo(dia, "Noite")} pratos
+                </p>
+              </div>
+
+              {/* Exibir média total do dia */}
+              <div className="mt-2 bg-white p-4 rounded-lg shadow-lg text-center">
+                <h3 className="text-md font-bold text-[#732457]">Média Total de Pratos Servidos no Dia</h3>
+                <p className="text-lg font-semibold text-[#a64182]">
+                  {calcularMediaPratosDia(dia)} pratos no total
+                </p>
+              </div>
+            </motion.div>
+          ))}
+        </>
+      )}
     </motion.div>
   );
 };
