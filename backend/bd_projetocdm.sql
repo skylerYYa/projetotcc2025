@@ -115,8 +115,8 @@ GO
 
 
 SELECT * FROM Usuario
-SELECT * FROM DadosRefeicao
 SELECT * FROM Mensagem
+SELECT * FROM DadosRefeicao
 SELECT * FROM Refeicao
 
 
