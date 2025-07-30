@@ -4,32 +4,37 @@ import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 import GraficoSemanal from "../components/graficos/GraficoSemanal";
 import { useState, useEffect } from "react";
 import { cadastrarDadosRefeicao, buscarDadosRefeicao } from "../services/dadosRefeicaoService";
+import { cadastrarRefeicao } from "../services/refeicaoService";
+
+const DIAS_SEMANA = [
+  "Segunda-feira",
+  "Terça-feira",
+  "Quarta-feira",
+  "Quinta-feira",
+  "Sexta-feira"
+];
+
+const PERIODOS = [
+  "Manhã",
+  "Tarde",
+  "Noite"
+];
 
 const RelatorioPage = () => {
   const navigate = useNavigate();
-  const dadosMock = [
-    {
-      diaSemana: "Segunda-feira",
-      periodo: "Manhã",
-      alunosPresentes: 500,
-      alunosComeram: 450,
-      repeticoes: 100,
-      pratosServidos: 600,
-      refeicao: "Farofa de Linguiça",
-    },
-  ];
 
-  const [dadosRefeicao, setDadosRefeicao] = useState(dadosMock);
+  const [dadosRefeicao, setDadosRefeicao] = useState([]);
 
   useEffect(() => {
     buscarDadosRefeicao()
       .then((res) => {
-        if (res.data.length > 0) {
-          setDadosRefeicao(res.data); // Substitui os fictícios pelos reais
+        if (res.data && Array.isArray(res.data)) {
+          setDadosRefeicao(res.data);
         }
       })
       .catch((err) => {
-        console.warn("Erro ao conectar com o backend. Usando dados fictícios.", err);
+        console.warn("Erro ao conectar com o backend.", err);
+        // Se quiser, aqui pode adicionar dados mock para testes offline
       });
   }, []);
 
@@ -37,10 +42,9 @@ const RelatorioPage = () => {
   const [mostrarModal, setMostrarModal] = useState(false);
   const [mensagemModal, setMensagemModal] = useState("");
 
-  // Estado para armazenar os dados do formulário
   const [novoRegistro, setNovoRegistro] = useState({
-    diaSemana: "Segunda-feira",
-    periodo: "Manhã",
+    diaSemana: DIAS_SEMANA[0],
+    periodo: PERIODOS[0],
     alunosPresentes: "",
     alunosComeram: "",
     repeticoes: "",
@@ -52,8 +56,7 @@ const RelatorioPage = () => {
     setNovoRegistro({ ...novoRegistro, [e.target.name]: e.target.value });
   };
 
-  const [atualizarGraficos, setAtualizarGraficos] = useState(false);
-
+  // CADASTRO DE NOVA REFEIÇÃO + REGISTRO
   const handleAdicionarRegistro = () => {
     if (
       novoRegistro.alunosPresentes &&
@@ -62,64 +65,92 @@ const RelatorioPage = () => {
       novoRegistro.refeicao &&
       novoRegistro.pratosServidos
     ) {
-      // CONVERSÃO DOS CAMPOS NUMÉRICOS PARA int
-      const registroCorrigido = {
+      const idDoUsuario = 1; // Ajuste para o usuário logado!
+
+      // 1. Cadastrar a refeição
+      const novaRefeicao = {
         diaSemana: novoRegistro.diaSemana,
         periodo: novoRegistro.periodo,
-        alunosPresentes: parseInt(novoRegistro.alunosPresentes, 10),
-        alunosComeram: parseInt(novoRegistro.alunosComeram, 10),
-        repeticoes: parseInt(novoRegistro.repeticoes, 10),
-        pratosServidos: parseInt(novoRegistro.pratosServidos, 10),
-        refeicao: novoRegistro.refeicao,
+        nomeRefeicao: novoRegistro.refeicao,
+        composicao: "Descrição da composição", // ajuste se quiser no form
+        usuario: { id: idDoUsuario },
+        dataCadastro: new Date().toISOString(),
+        statusRefeicao: "ATIVO"
       };
 
-      cadastrarDadosRefeicao(registroCorrigido)
-        .then(() => {
-          setMensagemModal(`Registro de ${novoRegistro.diaSemana} (${novoRegistro.periodo}) salvo com sucesso no banco!`);
-          setMostrarModal(true);
+      cadastrarRefeicao(novaRefeicao)
+        .then(res => {
+          const idDaRefeicaoCriada = res.data.id;
 
-          buscarDadosRefeicao().then((res) => setDadosRefeicao(res.data));
+          // 2. Cadastrar o registro de dados da refeição
+          const registroCorrigido = {
+            alunosPresentes: parseInt(novoRegistro.alunosPresentes, 10),
+            alunosComeram: parseInt(novoRegistro.alunosComeram, 10),
+            porcoesServidas: parseInt(novoRegistro.pratosServidos, 10),
+            usuario: { id: idDoUsuario },
+            refeicao: { id: idDaRefeicaoCriada },
+            dataCadastro: new Date().toISOString(),
+            statusRefeicao: "ATIVO"
+          };
 
-          setNovoRegistro({
-            diaSemana: "",
-            periodo: "",
-            alunosPresentes: "",
-            alunosComeram: "",
-            repeticoes: "",
-            refeicao: "",
-            pratosServidos: "",
-          });
+          cadastrarDadosRefeicao(registroCorrigido)
+            .then(() => {
+              setMensagemModal(
+                `Registro de ${novoRegistro.diaSemana} (${novoRegistro.periodo}) salvo com sucesso no banco!`
+              );
+              setMostrarModal(true);
+
+              buscarDadosRefeicao().then((res) => setDadosRefeicao(res.data));
+              setNovoRegistro({
+                diaSemana: DIAS_SEMANA[0],
+                periodo: PERIODOS[0],
+                alunosPresentes: "",
+                alunosComeram: "",
+                repeticoes: "",
+                refeicao: "",
+                pratosServidos: "",
+              });
+            })
+            .catch((err) => {
+              console.error("Erro ao salvar os dados da refeição:", err);
+              alert("Erro ao salvar os dados da refeição.");
+            });
         })
         .catch((err) => {
-          console.error("Erro ao salvar no banco:", err);
-          alert("Erro ao salvar. Verifique os dados ou a conexão.");
+          console.error("Erro ao cadastrar refeição:", err);
+          alert("Erro ao cadastrar a refeição.");
         });
     } else {
       alert("Preencha todos os campos antes de adicionar!");
     }
   };
 
+  // Cálculo de médias por período/dia
   const calcularMediaPratosPorPeriodo = (dia, periodo) => {
-    const registrosPeriodo = dadosRefeicao.filter(d => d.diaSemana === dia && d.periodo === periodo);
+    const registrosPeriodo = dadosRefeicao.filter(
+      d => d.diaSemana === dia && d.periodo === periodo
+    );
     if (registrosPeriodo.length === 0) return 0;
-
-    const totalPratosServidos = registrosPeriodo.reduce((acc, item) => acc + parseInt(item.pratosServidos, 10), 0);
-
-    return totalPratosServidos;
+    const totalPratosServidos = registrosPeriodo.reduce(
+      (acc, item) => acc + parseInt(item.porcoesServidas || item.pratosServidos, 10),
+      0
+    );
+    return Math.round(totalPratosServidos / registrosPeriodo.length);
   };
 
   const calcularMediaPratosDia = (dia) => {
     const registrosDoDia = dadosRefeicao.filter(d => d.diaSemana === dia);
     if (registrosDoDia.length === 0) return 0;
-
-    const totalPratosServidos = registrosDoDia.reduce((acc, item) => acc + parseInt(item.pratosServidos, 10), 0);
-
-    return totalPratosServidos;
+    const totalPratosServidos = registrosDoDia.reduce(
+      (acc, item) => acc + parseInt(item.porcoesServidas || item.pratosServidos, 10),
+      0
+    );
+    return Math.round(totalPratosServidos / registrosDoDia.length);
   };
 
   return (
     <motion.div className="min-h-screen bg-white text-gray-900 flex flex-col items-center justify-start">
-      {/* Header atualizado */}
+      {/* Header */}
       <div className="w-full bg-[#732457] text-white px-8 py-4 flex items-center justify-between shadow-lg">
         <h1 className="text-2xl font-bold">Relatórios de Consumo & Estatísticas</h1>
         <button
@@ -137,20 +168,23 @@ const RelatorioPage = () => {
           <div className="bg-white p-6 rounded-lg shadow-lg w-80 text-center">
             <h2 className="text-lg font-bold text-[#732457] mb-4">Registro Adicionado</h2>
             <p>{mensagemModal}</p>
-            <button onClick={() => setMostrarModal(false)} className="mt-4 bg-[#4CAF50] hover:bg-[#388E3C] text-white py-2 px-4 rounded-lg">
+            <button
+              onClick={() => setMostrarModal(false)}
+              className="mt-4 bg-[#4CAF50] hover:bg-[#388E3C] text-white py-2 px-4 rounded-lg"
+            >
               OK
             </button>
           </div>
         </motion.div>
       )}
 
-      {/* Formulário para adicionar registros reais */}
+      {/* Formulário para adicionar registros */}
       <motion.div className="mt-6 bg-gray-100 p-6 rounded-lg shadow-lg w-3/5">
         <h2 className="text-lg font-bold text-[#732457]">Adicionar Registro Diário</h2>
 
         <label className="block font-semibold mt-3">Dia da Semana:</label>
         <select name="diaSemana" value={novoRegistro.diaSemana} onChange={handleChange} className="w-full p-2 border rounded-md">
-          {["Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira"].map((dia) => (
+          {DIAS_SEMANA.map((dia) => (
             <option key={dia} value={dia}>{dia}</option>
           ))}
         </select>
@@ -160,7 +194,7 @@ const RelatorioPage = () => {
 
         <label className="block font-semibold mt-3">Período:</label>
         <select name="periodo" value={novoRegistro.periodo} onChange={handleChange} className="w-full p-2 border rounded-md">
-          {["Manhã", "Tarde", "Noite"].map((p) => (
+          {PERIODOS.map((p) => (
             <option key={p} value={p}>{p}</option>
           ))}
         </select>
@@ -187,41 +221,53 @@ const RelatorioPage = () => {
         </motion.button>
       </motion.div>
 
-      {/* Gráficos por dia da semana */}
+      {/* Renderização dos registros agrupados por dia */}
       {mostrarGraficos && (
         <>
-          {[...new Set(dadosRefeicao.map(d => d.diaSemana))].map((dia) => (
-            <motion.div key={dia} className="mt-8 bg-gray-100 p-6 rounded-lg shadow-lg w-3/5">
-              <h2 className="text-lg font-bold text-[#732457] mb-4">
-                {dia} - {dadosRefeicao.find(d => d.diaSemana === dia)?.refeicao || "Refeição Não Definida"}
-              </h2>
+          {DIAS_SEMANA.map((dia) => {
+            const registrosDia = dadosRefeicao.filter(r => r.diaSemana === dia);
+            if (registrosDia.length === 0) return null;
+            return (
+              <motion.div key={dia} className="mt-8 bg-gray-100 p-6 rounded-lg shadow-lg w-3/5">
+                <h2 className="text-lg font-bold text-[#732457] mb-4">{dia}</h2>
+                {/* Listar todos os registros daquele dia */}
+                {registrosDia.map((registro, idx) => (
+                  <div key={registro.id || `${dia}-${registro.periodo}-${idx}`} className="mb-4 p-4 bg-white rounded shadow">
+                    <div className="font-semibold">
+                      Período: {registro.periodo} | Refeição: {registro.refeicao?.nomeRefeicao || registro.refeicao || "?"}
+                    </div>
+                    <div>Alunos Presentes: {registro.alunosPresentes}</div>
+                    <div>Alunos Comeram: {registro.alunosComeram}</div>
+                    <div>Pratos Servidos: {registro.porcoesServidas}</div>
+                  </div>
+                ))}
 
-              {/* Exibir gráfico com dados atualizados */}
-              <GraficoSemanal dados={dadosRefeicao.filter(d => d.diaSemana === dia)} />
+                {/* Gráfico por dia */}
+                <GraficoSemanal dados={registrosDia} />
 
-              {/* Exibir média por período */}
-              <div className="mt-4 bg-white p-4 rounded-lg shadow-lg text-center">
-                <h3 className="text-md font-bold text-[#732457]">Média de Pratos Servidos por Período</h3>
-                <p className="text-lg font-semibold text-[#a64182]">
-                  Manhã: {calcularMediaPratosPorPeriodo(dia, "Manhã")} pratos
-                </p>
-                <p className="text-lg font-semibold text-[#a64182]">
-                  Tarde: {calcularMediaPratosPorPeriodo(dia, "Tarde")} pratos
-                </p>
-                <p className="text-lg font-semibold text-[#a64182]">
-                  Noite: {calcularMediaPratosPorPeriodo(dia, "Noite")} pratos
-                </p>
-              </div>
+                {/* Médias */}
+                <div className="mt-4 bg-white p-4 rounded-lg shadow-lg text-center">
+                  <h3 className="text-md font-bold text-[#732457]">Média de Pratos Servidos por Período</h3>
+                  <p className="text-lg font-semibold text-[#a64182]">
+                    Manhã: {calcularMediaPratosPorPeriodo(dia, "Manhã")} pratos
+                  </p>
+                  <p className="text-lg font-semibold text-[#a64182]">
+                    Tarde: {calcularMediaPratosPorPeriodo(dia, "Tarde")} pratos
+                  </p>
+                  <p className="text-lg font-semibold text-[#a64182]">
+                    Noite: {calcularMediaPratosPorPeriodo(dia, "Noite")} pratos
+                  </p>
+                </div>
 
-              {/* Exibir média total do dia */}
-              <div className="mt-2 bg-white p-4 rounded-lg shadow-lg text-center">
-                <h3 className="text-md font-bold text-[#732457]">Média Total de Pratos Servidos no Dia</h3>
-                <p className="text-lg font-semibold text-[#a64182]">
-                  {calcularMediaPratosDia(dia)} pratos no total
-                </p>
-              </div>
-            </motion.div>
-          ))}
+                <div className="mt-2 bg-white p-4 rounded-lg shadow-lg text-center">
+                  <h3 className="text-md font-bold text-[#732457]">Média Total de Pratos Servidos no Dia</h3>
+                  <p className="text-lg font-semibold text-[#a64182]">
+                    {calcularMediaPratosDia(dia)} pratos no total
+                  </p>
+                </div>
+              </motion.div>
+            );
+          })}
         </>
       )}
     </motion.div>
