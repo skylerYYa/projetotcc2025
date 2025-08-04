@@ -1,7 +1,5 @@
 package br.itb.projeto.cdmprojeto.service;
 
-import java.time.LocalDateTime;
-import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,45 +33,35 @@ public class UsuarioService {
 		return usuarios;
 	}
 
+
 	@Transactional
-	public Usuario save(Usuario usuario) {
+	public boolean deleteUsuario(long id) {
+		Optional<Usuario> usuarioOpt = usuarioRepository.findById(id);
+		if (usuarioOpt.isPresent()) {
+			usuarioRepository.deleteById(id);
+			return true;
+		}
+		return false;
+	}
 
-		Usuario _usuario = usuarioRepository.findByEmail(usuario.getEmail());
-
-		if (_usuario == null) {
-			String senha = Base64.getEncoder()
-									.encodeToString(usuario.getSenha().getBytes());
-			usuario.setSenha(senha);
-			usuario.setDataCadastro(LocalDateTime.now());
-			usuario.setStatusUsuario("ATIVO");
+	@Transactional
+	public Usuario mudarStatusUsuario(long id, String novoStatus) {
+		Optional<Usuario> usuarioOpt = usuarioRepository.findById(id);
+		if (usuarioOpt.isPresent()) {
+			Usuario usuario = usuarioOpt.get();
+			usuario.setStatusUsuario(novoStatus);
 			return usuarioRepository.save(usuario);
 		}
-
 		return null;
 	}
 
-	@Transactional
+	public Usuario save(Usuario usuario) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	public Usuario login(String email, String senha) {
-
-		Usuario _usuario = usuarioRepository.findByEmail(email);
-
-		if (_usuario != null) {
-			if (_usuario.getStatusUsuario().equals("ATIVO")) {
-				byte[] decodedPass = Base64.getDecoder()
-											.decode(_usuario.getSenha());
-
-				if (new String(decodedPass).equals(senha)) {
-					return _usuario;
-				}
-			}
-		}
+		// TODO Auto-generated method stub
 		return null;
 	}
-
 }
-
-
-
-
-
-
