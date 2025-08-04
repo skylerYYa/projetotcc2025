@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { PlusCircleIcon, XCircleIcon, ArrowPathIcon } from '@heroicons/react/24/solid';
 import { cadastrarUsuario } from "../../services/usuarioService";
-import { useUsers } from "../../contexts/UserContext"; 
+import { useUsers } from "../../contexts/UserContext";
 
 const inputClass = "w-full px-4 py-2.5 border border-slate-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-upliving-primary focus:border-upliving-primary transition duration-150 text-sm placeholder:text-slate-400";
 const labelClass = "block text-sm font-medium text-slate-700 mb-1.5";
@@ -15,6 +15,7 @@ const AddUserForm = ({ onSubmit, onCancel, initialData, isSubmitting }) => {
   const [senha, setSenha] = useState('');
   const [birthdate, setBirthdate] = useState('');
   const [role, setRole] = useState('');
+  const [rm, setRm] = useState("");
   const [isActive, setIsActive] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
 
@@ -25,10 +26,11 @@ const AddUserForm = ({ onSubmit, onCancel, initialData, isSubmitting }) => {
       setEmail(data.email || '');
       setBirthdate(data.birthdate || '');
       setRole(data.role || '');
+      setRm(data.rm || '');
       setIsActive(data.active !== undefined ? data.active : true);
     }
   };
-  
+
   useEffect(() => {
     if (initialData) {
       populateForm(initialData);
@@ -43,13 +45,14 @@ const AddUserForm = ({ onSubmit, onCancel, initialData, isSubmitting }) => {
     setEmail('');
     setBirthdate('');
     setRole('');
+    setRm('');
     setIsActive(true);
     setIsEditing(false);
     if (notifyCancel && onCancel) {
-        onCancel();
+      onCancel();
     }
   };
-  
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!name || !email || !birthdate || !role) {
@@ -59,21 +62,22 @@ const AddUserForm = ({ onSubmit, onCancel, initialData, isSubmitting }) => {
 
     const userData = {
       nome: name,
-      email,
+      email: email,
       dataNascimento: birthdate,
-      cargo: role,
-      ativo: isActive,
-      senha: senha, 
+      nivelAcesso: role,
+      rm: rm,
+      senha: senha,
     };
 
     cadastrarUsuario(userData)
       .then(() => {
         alert("Usuário cadastrado com sucesso!");
-        refreshUsersFromBackend(); 
+        refreshUsersFromBackend();
         clearForm(false);
       })
       .catch((err) => {
         console.error("Erro ao cadastrar usuário:", err);
+        console.log(userData)
         alert("Erro ao salvar no banco. Verifique os dados ou a conexão.");
       });
   };
@@ -89,7 +93,7 @@ const AddUserForm = ({ onSubmit, onCancel, initialData, isSubmitting }) => {
       <h3 className="text-xl sm:text-2xl font-semibold text-slate-800 mb-6 border-b border-slate-200 pb-4">
         {isEditing ? 'Editar Usuário' : 'Cadastrar Novo Usuário'}
       </h3>
-      
+
       {/* Nome */}
       <div>
         <label className={labelClass}>Nome</label>
@@ -140,14 +144,30 @@ const AddUserForm = ({ onSubmit, onCancel, initialData, isSubmitting }) => {
       {/* Função/Cargo */}
       <div>
         <label className={labelClass}>Função/Cargo</label>
-        <input
+        <select
           className={inputClass}
-          type="text"
           value={role}
           onChange={e => setRole(e.target.value)}
-          placeholder="Ex: Administrador, Funcionário, Aluno"
-        />
+        >
+          <option value="">Selecione uma função</option>
+          <option value="ADMIN">ADMIN</option>
+          <option value="FUNCIONARIO">FUNCIONÁRIO</option>
+          <option value="ALUNO">ALUNO</option>
+        </select>
       </div>
+
+      {role === "ALUNO" && (
+        <div>
+          <label className={labelClass}>RM do Aluno</label>
+          <input
+            className={inputClass}
+            type="text"
+            value={rm}
+            onChange={e => setRm(e.target.value)}
+            placeholder="Digite o RM do aluno"
+          />
+        </div>
+      )}
 
       {/* Ativo/Inativo */}
       <div className="flex items-center">

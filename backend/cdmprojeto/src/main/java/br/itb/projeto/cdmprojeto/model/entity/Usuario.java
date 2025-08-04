@@ -1,5 +1,6 @@
 package br.itb.projeto.cdmprojeto.model.entity;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -12,6 +13,9 @@ public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    
+    @Column(nullable = true, length = 10)
+    private String rm;
 
     @Column(nullable = false, length = 100)
     private String nome;
@@ -30,6 +34,9 @@ public class Usuario {
 
     @Column(nullable = false)
     private LocalDateTime dataCadastro;
+    
+    @Column(nullable = false)
+    private LocalDate dataNascimento;
 
     @Column(nullable = false, length = 20)
     private String statusUsuario; // ATIVO ou INATIVO ou TROCAR_SENHA
@@ -65,4 +72,18 @@ public class Usuario {
 
     public String getStatusUsuario() { return statusUsuario; }
     public void setStatusUsuario(String statusUsuario) { this.statusUsuario = statusUsuario; }
+	public String getRm() {
+		return rm;
+	}
+	public void setRm(String rm) {
+		this.rm = rm;
+	}
+	public LocalDate getDataNascimento() {
+		return dataNascimento;
+	}
+	public void setDataNascimento(LocalDate dataNascimento) {
+		this.dataNascimento = dataNascimento;
+	}
+    
+    
 }
