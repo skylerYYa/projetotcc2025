@@ -78,4 +78,9 @@ public class UsuarioService {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	public Usuario atualizarUsuario(Long id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

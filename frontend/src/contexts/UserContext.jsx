@@ -5,6 +5,7 @@ import {
   excluirUsuario,
   ativarUsuario,
   inativarUsuario,
+  atualizarUsuario,
 } from "../services/usuarioService";
 
 const UserContext = createContext();
@@ -41,9 +42,19 @@ export const UserProvider = ({ children }) => {
       });
   };
 
-  const updateUser = (updatedUser) => {
-    // Implemente se houver endpoint para editar usuário
-  };
+  const updateUser = (id, updatedUser) => {
+  atualizarUsuario(id, updatedUser)
+    .then((res) => {
+      setUsers((prev) =>
+        prev.map((user) => (user.id === id ? res.data : user))
+      );
+      refreshUsersFromBackend(); 
+    })
+    .catch((err) => {
+      console.error("Erro ao atualizar usuário:", err);
+    });
+};
+
 
   const toggleUserStatus = (userId, active) => {
     const fn = active ? inativarUsuario : ativarUsuario;

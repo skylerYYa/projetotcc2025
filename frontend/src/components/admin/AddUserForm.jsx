@@ -1,20 +1,25 @@
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { PlusCircleIcon, XCircleIcon, ArrowPathIcon } from '@heroicons/react/24/solid';
+import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import {
+  PlusCircleIcon,
+  XCircleIcon,
+  ArrowPathIcon,
+} from "@heroicons/react/24/solid";
 import { cadastrarUsuario } from "../../services/usuarioService";
 import { useUsers } from "../../contexts/UserContext";
 
-const inputClass = "w-full px-4 py-2.5 border border-slate-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-upliving-primary focus:border-upliving-primary transition duration-150 text-sm placeholder:text-slate-400";
+const inputClass =
+  "w-full px-4 py-2.5 border border-slate-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-upliving-primary focus:border-upliving-primary transition duration-150 text-sm placeholder:text-slate-400";
 const labelClass = "block text-sm font-medium text-slate-700 mb-1.5";
 
-const AddUserForm = ({ onSubmit, onCancel, initialData, isSubmitting }) => {
-  const { refreshUsersFromBackend } = useUsers();
+const AddUserForm = ({ onCancel, initialData, isSubmitting }) => {
+  const { refreshUsersFromBackend, updateUser } = useUsers();
 
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [senha, setSenha] = useState('');
-  const [birthdate, setBirthdate] = useState('');
-  const [role, setRole] = useState('');
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
+  const [birthdate, setBirthdate] = useState("");
+  const [role, setRole] = useState("");
   const [rm, setRm] = useState("");
   const [isActive, setIsActive] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
@@ -22,12 +27,12 @@ const AddUserForm = ({ onSubmit, onCancel, initialData, isSubmitting }) => {
   const populateForm = (data) => {
     if (data) {
       setIsEditing(true);
-      setName(data.name || '');
-      setEmail(data.email || '');
-      setBirthdate(data.birthdate || '');
-      setRole(data.role || '');
-      setRm(data.rm || '');
-      setIsActive(data.active !== undefined ? data.active : true);
+      setName(data.nome || "");
+      setEmail(data.email || "");
+      setBirthdate(data.dataNascimento || "");
+      setRole(data.nivelAcesso || "");
+      setRm(data.rm || "");
+      setIsActive(data.ativo !== undefined ? data.ativo : true);
     }
   };
 
@@ -41,11 +46,12 @@ const AddUserForm = ({ onSubmit, onCancel, initialData, isSubmitting }) => {
   }, [initialData]);
 
   const clearForm = (notifyCancel = true) => {
-    setName('');
-    setEmail('');
-    setBirthdate('');
-    setRole('');
-    setRm('');
+    setName("");
+    setEmail("");
+    setSenha("");
+    setBirthdate("");
+    setRole("");
+    setRm("");
     setIsActive(true);
     setIsEditing(false);
     if (notifyCancel && onCancel) {
@@ -55,8 +61,9 @@ const AddUserForm = ({ onSubmit, onCancel, initialData, isSubmitting }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
     if (!name || !email || !birthdate || !role) {
-      alert('Por favor, preencha todos os campos obrigatórios.');
+      alert("Por favor, preencha todos os campos obrigatórios.");
       return;
     }
 
@@ -67,19 +74,32 @@ const AddUserForm = ({ onSubmit, onCancel, initialData, isSubmitting }) => {
       nivelAcesso: role,
       rm: rm,
       senha: senha,
+      ativo: isActive,
     };
 
-    cadastrarUsuario(userData)
-      .then(() => {
-        alert("Usuário cadastrado com sucesso!");
-        refreshUsersFromBackend();
-        clearForm(false);
-      })
-      .catch((err) => {
-        console.error("Erro ao cadastrar usuário:", err);
-        console.log(userData)
-        alert("Erro ao salvar no banco. Verifique os dados ou a conexão.");
-      });
+    if (isEditing) {
+      updateUser(initialData.id, userData)
+        .then(() => {
+          alert("Usuário atualizado com sucesso!");
+          refreshUsersFromBackend();
+          clearForm(false);
+        })
+        .catch((err) => {
+          console.error("Erro ao atualizar usuário:", err);
+          alert("Erro ao atualizar no banco.");
+        });
+    } else {
+      cadastrarUsuario(userData)
+        .then(() => {
+          alert("Usuário cadastrado com sucesso!");
+          refreshUsersFromBackend();
+          clearForm(false);
+        })
+        .catch((err) => {
+          console.error("Erro ao cadastrar usuário:", err);
+          alert("Erro ao salvar no banco. Verifique os dados ou a conexão.");
+        });
+    }
   };
 
   return (
@@ -91,7 +111,7 @@ const AddUserForm = ({ onSubmit, onCancel, initialData, isSubmitting }) => {
       className="space-y-6 bg-white p-6 sm:p-8 rounded-xl shadow-2xl border border-slate-200"
     >
       <h3 className="text-xl sm:text-2xl font-semibold text-slate-800 mb-6 border-b border-slate-200 pb-4">
-        {isEditing ? 'Editar Usuário' : 'Cadastrar Novo Usuário'}
+        {isEditing ? "Editar Usuário" : "Cadastrar Novo Usuário"}
       </h3>
 
       {/* Nome */}
@@ -101,7 +121,7 @@ const AddUserForm = ({ onSubmit, onCancel, initialData, isSubmitting }) => {
           className={inputClass}
           type="text"
           value={name}
-          onChange={e => setName(e.target.value)}
+          onChange={(e) => setName(e.target.value)}
           placeholder="Nome completo"
         />
       </div>
@@ -113,7 +133,7 @@ const AddUserForm = ({ onSubmit, onCancel, initialData, isSubmitting }) => {
           className={inputClass}
           type="email"
           value={email}
-          onChange={e => setEmail(e.target.value)}
+          onChange={(e) => setEmail(e.target.value)}
           placeholder="email@exemplo.com"
         />
       </div>
@@ -125,8 +145,8 @@ const AddUserForm = ({ onSubmit, onCancel, initialData, isSubmitting }) => {
           className={inputClass}
           type="password"
           value={senha}
-          onChange={e => setSenha(e.target.value)}
-          placeholder="Senha temporária"
+          onChange={(e) => setSenha(e.target.value)}
+          placeholder="Senha"
         />
       </div>
 
@@ -137,7 +157,7 @@ const AddUserForm = ({ onSubmit, onCancel, initialData, isSubmitting }) => {
           className={inputClass}
           type="date"
           value={birthdate}
-          onChange={e => setBirthdate(e.target.value)}
+          onChange={(e) => setBirthdate(e.target.value)}
         />
       </div>
 
@@ -147,7 +167,7 @@ const AddUserForm = ({ onSubmit, onCancel, initialData, isSubmitting }) => {
         <select
           className={inputClass}
           value={role}
-          onChange={e => setRole(e.target.value)}
+          onChange={(e) => setRole(e.target.value)}
         >
           <option value="">Selecione uma função</option>
           <option value="ADMIN">ADMIN</option>
@@ -163,7 +183,7 @@ const AddUserForm = ({ onSubmit, onCancel, initialData, isSubmitting }) => {
             className={inputClass}
             type="text"
             value={rm}
-            onChange={e => setRm(e.target.value)}
+            onChange={(e) => setRm(e.target.value)}
             placeholder="Digite o RM do aluno"
           />
         </div>
@@ -175,10 +195,12 @@ const AddUserForm = ({ onSubmit, onCancel, initialData, isSubmitting }) => {
           id="isActive"
           type="checkbox"
           checked={isActive}
-          onChange={e => setIsActive(e.target.checked)}
+          onChange={(e) => setIsActive(e.target.checked)}
           className="mr-2"
         />
-        <label htmlFor="isActive" className="text-sm">Usuário ativo</label>
+        <label htmlFor="isActive" className="text-sm">
+          Usuário ativo
+        </label>
       </div>
 
       {/* Botões */}
@@ -189,7 +211,7 @@ const AddUserForm = ({ onSubmit, onCancel, initialData, isSubmitting }) => {
           className="flex-1 flex items-center justify-center gap-1 bg-[#732457] text-white rounded-lg px-4 py-2 font-semibold shadow-md hover:bg-[#a64182] transition"
         >
           <PlusCircleIcon className="w-5 h-5" />
-          {isEditing ? 'Salvar Alterações' : 'Cadastrar Usuário'}
+          {isEditing ? "Salvar Alterações" : "Cadastrar Usuário"}
         </button>
         <button
           type="button"

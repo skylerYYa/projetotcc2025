@@ -9,6 +9,8 @@ import br.itb.projeto.cdmprojeto.model.entity.Usuario;
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 
 	Usuario findByEmail(String email);
+
+	Usuario findByRm(String rm);
 	
 
 

@@ -1,12 +1,14 @@
 package br.itb.projeto.cdmprojeto.rest.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import br.itb.projeto.cdmprojeto.model.entity.Usuario;
+import br.itb.projeto.cdmprojeto.model.repository.UsuarioRepository;
 import br.itb.projeto.cdmprojeto.rest.exception.ResourceNotFoundException;
 import br.itb.projeto.cdmprojeto.service.UsuarioService;
 
@@ -16,6 +18,8 @@ import br.itb.projeto.cdmprojeto.service.UsuarioService;
 public class UsuarioController {
 
 	private UsuarioService usuarioService;
+	
+	private UsuarioRepository usuarioRepository;
 
 	public UsuarioController(UsuarioService usuarioService) {
 		super();
@@ -30,6 +34,7 @@ public class UsuarioController {
 
 	@PostMapping("/save")
 	public ResponseEntity<?> save(@RequestBody Usuario usuario) {
+
 	    Usuario _usuario = usuarioService.save(usuario);
 	    if (_usuario != null) {
 	        return ResponseEntity.status(HttpStatus.CREATED).body(_usuario);
@@ -47,7 +52,7 @@ public class UsuarioController {
 		throw new ResourceNotFoundException("Dados Incorretos!!!");
 	}
 
-	// NOVOS ENDPOINTS:
+
 	@DeleteMapping("/delete/{id}")
 	public ResponseEntity<?> deleteUsuario(@PathVariable long id) {
 		boolean deleted = usuarioService.deleteUsuario(id);
@@ -74,4 +79,19 @@ public class UsuarioController {
 		}
 		throw new ResourceNotFoundException("Usuário não encontrado para inativar!");
 	}
+
+	@PutMapping("/usuario/{id}")
+	public ResponseEntity<?> atualizarUsuario(@PathVariable Long id, @RequestBody Usuario usuario) {
+	    Optional<Usuario> usuarioExistente = usuarioRepository.findById(id);
+
+	    if (!usuarioExistente.isPresent()) {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado");
+	    }
+	    
+	    usuario.setId(id);
+
+	    Usuario usuarioAtualizado = usuarioRepository.save(usuario);
+	    return ResponseEntity.ok(usuarioAtualizado);
+	}
+
 }
