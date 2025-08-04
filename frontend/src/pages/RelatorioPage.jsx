@@ -15,7 +15,7 @@ const DIAS_SEMANA = [
 ];
 
 const PERIODOS = [
-  "Manhã",
+  "Manha",
   "Tarde",
   "Noite"
 ];

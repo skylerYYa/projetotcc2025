@@ -1,5 +1,5 @@
 import axios from "axios";
-const BASE_URL = "http://localhost:8080/api/refeicoes";
+const BASE_URL = "http://localhost:8080/refeicao";
 
 export const cadastrarRefeicao = (dadosRefeicao) => 
   axios.post(BASE_URL, dadosRefeicao);

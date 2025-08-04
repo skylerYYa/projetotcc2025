@@ -10,7 +10,7 @@ import br.itb.projeto.cdmprojeto.model.entity.Refeicao;
 import br.itb.projeto.cdmprojeto.service.RefeicaoService;
 
 @RestController
-@RequestMapping("/api/refeicoes")
+@RequestMapping("/refeicao")
 @CrossOrigin(origins = "http://localhost:5173")
 public class RefeicaoController {
 
