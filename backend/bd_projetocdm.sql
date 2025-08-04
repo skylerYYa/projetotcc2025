@@ -10,11 +10,13 @@ GO
 
 CREATE TABLE Usuario
 ( 
-   id            INT			IDENTITY,
+   id            INT			IDENTITY,  
+   rm          VARCHAR(10)	 NULL,
    nome          VARCHAR(100)	NOT NULL,
+      dataNascimento	DATE	NOT NULL,
    email         VARCHAR(100)	UNIQUE NOT NULL,
    senha         VARCHAR(100)	NOT NULL,
-   nivelAcesso   VARCHAR(10)    NULL, -- ADMIN ou FUNCIONARIO ou ALUNO
+   nivelAcesso   VARCHAR(20)    NULL, -- ADMIN ou FUNCIONARIO ou ALUNO
    foto			 VARBINARY(MAX) NULL,
    dataCadastro	 SMALLDATETIME	NOT NULL,
    statusUsuario VARCHAR(20)    NOT NULL, -- ATIVO ou INATIVO ou TROCAR_SENHA
@@ -22,14 +24,14 @@ CREATE TABLE Usuario
    PRIMARY KEY (id)
 )
 GO
-INSERT Usuario (nome, email, senha, nivelAcesso, foto, dataCadastro, statusUsuario)
-VALUES ('Fulano da Silva', 'fulano@email.com.br', 'MTIzNDU2Nzg=', 'ADMIN', NULL, GETDATE(), 'ATIVO')
-INSERT Usuario (nome, email, senha, nivelAcesso, foto, dataCadastro, statusUsuario)
-VALUES ('Beltrana de Sa', 'beltrana@email.com.br', 'MTIzNDU2Nzg=', 'USER', NULL, GETDATE(), 'ATIVO')
-INSERT Usuario (nome, email, senha, nivelAcesso, foto, dataCadastro, statusUsuario)
-VALUES ('Sicrana de Oliveira', 'sicrana@email.com.br', 'MTIzNDU2Nzg=', 'USER', NULL, GETDATE(), 'INATIVO')
-INSERT Usuario (nome, email, senha, nivelAcesso, foto, dataCadastro, statusUsuario)
-VALUES ('Ordnael Zurc', 'ordnael@email.com.br', 'MTIzNDU2Nzg=', 'USER', NULL, GETDATE(), 'TROCAR_SENHA')
+INSERT Usuario (rm, nome, dataNascimento, email, senha, nivelAcesso, foto, dataCadastro, statusUsuario)
+VALUES (null, 'Fulano da Silva','09/04/1989', 'fulano@email.com.br', 'MTIzNDU2Nzg=', 'ADMIN', NULL, GETDATE(), 'ATIVO')
+INSERT Usuario (rm, nome, dataNascimento,  email, senha, nivelAcesso, foto, dataCadastro, statusUsuario)
+VALUES (null,'Beltrana de Sa','22/08/2009', 'beltrana@email.com.br', 'MTIzNDU2Nzg=', 'FUNCIONARIO', NULL, GETDATE(), 'ATIVO')
+INSERT Usuario (rm, nome, dataNascimento,  email, senha, nivelAcesso, foto, dataCadastro, statusUsuario)
+VALUES ('89937','Sicrana de Oliveira','12/10/2000', 'sicrana@email.com.br', 'MTIzNDU2Nzg=', 'ALUNO', NULL, GETDATE(), 'ATIVO')
+INSERT Usuario (rm, nome, dataNascimento,  email, senha, nivelAcesso, foto, dataCadastro, statusUsuario)
+VALUES ('89976','Ordnael Zurc','10/09/1987', 'ordnael@email.com.br', 'MTIzNDU2Nzg=', 'ALUNO', NULL, GETDATE(), 'ATIVO')
 GO
 
 CREATE TABLE Refeicao 
