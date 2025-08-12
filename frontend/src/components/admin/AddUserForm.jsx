@@ -67,6 +67,7 @@ const AddUserForm = ({ onCancel, initialData, isSubmitting }) => {
       return;
     }
 
+    const statusUsuario = isActive ? "ATIVO" : "INATIVO";
     const userData = {
       nome: name,
       email: email,
@@ -74,7 +75,7 @@ const AddUserForm = ({ onCancel, initialData, isSubmitting }) => {
       nivelAcesso: role,
       rm: rm,
       senha: senha,
-      ativo: isActive,
+      statusUsuario,
     };
 
     if (isEditing) {
