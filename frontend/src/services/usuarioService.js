@@ -7,4 +7,4 @@ export const loginUsuario = (credenciais) => axios.post(`${BASE_URL}/login`, cre
 export const excluirUsuario = (id) => axios.delete(`${BASE_URL}/delete/${id}`);
 export const ativarUsuario = (id) => axios.put(`${BASE_URL}/ativar/${id}`);
 export const inativarUsuario = (id) => axios.put(`${BASE_URL}/inativar/${id}`);
-export const atualizarUsuario = (id) => axios.put(`${BASE_URL}/${id}`, usuario);
+export const atualizarUsuario = (id, usuario) => axios.put(`${BASE_URL}/${id}`, usuario);
