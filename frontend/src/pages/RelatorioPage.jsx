@@ -8,7 +8,7 @@ import { cadastrarRefeicao } from "../services/refeicaoService";
 
 const DIAS_SEMANA = [
   "Segunda-feira",
-  "Terça-feira",
+  "Terca-feira",
   "Quarta-feira",
   "Quinta-feira",
   "Sexta-feira"
@@ -56,7 +56,7 @@ const RelatorioPage = () => {
     setNovoRegistro({ ...novoRegistro, [e.target.name]: e.target.value });
   };
 
-  // CADASTRO DE NOVA REFEIÇÃO + REGISTRO
+  
   const handleAdicionarRegistro = () => {
     if (
       novoRegistro.alunosPresentes &&
@@ -65,14 +65,14 @@ const RelatorioPage = () => {
       novoRegistro.refeicao &&
       novoRegistro.pratosServidos
     ) {
-      const idDoUsuario = 1; // Ajuste para o usuário logado!
+      const idDoUsuario = 1; 
 
-      // 1. Cadastrar a refeição
+      
       const novaRefeicao = {
         diaSemana: novoRegistro.diaSemana,
         periodo: novoRegistro.periodo,
         nomeRefeicao: novoRegistro.refeicao,
-        composicao: "Descrição da composição", // ajuste se quiser no form
+        composicao: "Descrição da composição", 
         usuario: { id: idDoUsuario },
         dataCadastro: new Date().toISOString(),
         statusRefeicao: "ATIVO"
@@ -82,7 +82,7 @@ const RelatorioPage = () => {
         .then(res => {
           const idDaRefeicaoCriada = res.data.id;
 
-          // 2. Cadastrar o registro de dados da refeição
+          
           const registroCorrigido = {
             alunosPresentes: parseInt(novoRegistro.alunosPresentes, 10),
             alunosComeram: parseInt(novoRegistro.alunosComeram, 10),
@@ -125,7 +125,7 @@ const RelatorioPage = () => {
     }
   };
 
-  // Cálculo de médias por período/dia
+  
   const calcularMediaPratosPorPeriodo = (dia, periodo) => {
     const registrosPeriodo = dadosRefeicao.filter(
       d => d.diaSemana === dia && d.periodo === periodo
