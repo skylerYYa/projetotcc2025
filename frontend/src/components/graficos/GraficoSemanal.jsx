@@ -12,19 +12,20 @@ import {
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
 const GraficoSemanal = ({ dados }) => {
+   console.log("Dados recebidos pelo gráfico:", dados);
   if (!dados || dados.length === 0) {
     return <div className="w-full bg-white p-2 rounded-lg shadow text-center text-[#732457]">Nenhum dado para exibir.</div>;
   }
 
-  const periodos = ["Manhã", "Tarde", "Noite"];
+  const periodos = ["Manha", "Tarde", "Noite"];
   const labels = periodos;
 
   const pratosPorPeriodo = periodos.map((periodo) => {
     const registrosPeriodo = dados.filter((d) => d.periodo === periodo);
     const total = registrosPeriodo.reduce(
-      (acc, item) => acc + (parseInt(item.porcoesServidas ?? item.pratosServidos ?? 0, 10) || 0),
-      0
-    );
+  (acc, item) => acc + (parseInt(item.porcoesServidas ?? item.pratosServidos ?? 0, 10) || 0),
+  0
+);
     return total;
   });
 
