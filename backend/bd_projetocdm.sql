@@ -122,10 +122,3 @@ SELECT * FROM DadosRefeicao
 SELECT * FROM Refeicao
 
 
-/* VERIFICAR CONEX�ES EXISTENTES */
-/*
-SELECT * FROM sys.dm_exec_sessions
-WHERE database_id = DB_ID('bd_pizzaria_3d')
-AND host_name IS NOT NULL
-AND program_name LIKE 'Microsoft SQL Server Management Studio%'
-*/

@@ -46,7 +46,7 @@ const RelatorioPage = () => {
     alunosComeram: "",
     repeticoes: "",
     porcoesServidas: "",
-    pratosServidos: "",
+    refeicao: "",
   });
 
   const handleChange = (e) => {
@@ -59,7 +59,7 @@ const RelatorioPage = () => {
       novoRegistro.alunosComeram &&
       novoRegistro.repeticoes &&
       novoRegistro.porcoesServidas &&
-      novoRegistro.pratosServidos
+      novoRegistro.refeicao
     ) {
       const idDoUsuario = 1;
 
@@ -80,7 +80,7 @@ const RelatorioPage = () => {
           const registroCorrigido = {
             alunosPresentes: parseInt(novoRegistro.alunosPresentes, 10),
             alunosComeram: parseInt(novoRegistro.alunosComeram, 10),
-            porcoesServidas: parseInt(novoRegistro.pratosServidos, 10),
+            porcoesServidas: parseInt(novoRegistro.porcoesServidas, 10),
             usuario: { id: idDoUsuario },
             refeicao: { id: idDaRefeicaoCriada },
             dataCadastro: new Date().toISOString(),
@@ -102,7 +102,7 @@ const RelatorioPage = () => {
                 alunosComeram: "",
                 repeticoes: "",
                 refeicao: "",
-                pratosServidos: "",
+                porcoesServidas: "",
               });
             })
             .catch((err) => {
@@ -124,23 +124,23 @@ const RelatorioPage = () => {
       (d) => d.diaSemana === dia && d.periodo === periodo
     );
     if (registrosPeriodo.length === 0) return 0;
-    const totalPratosServidos = registrosPeriodo.reduce(
+    const totalporcoesServidas = registrosPeriodo.reduce(
       (acc, item) =>
-        acc + parseInt(item.porcoesServidas || item.pratosServidos, 10),
+        acc + parseInt(item.porcoesServidas || item.porcoesServidas, 10),
       0
     );
-    return Math.round(totalPratosServidos / registrosPeriodo.length);
+    return Math.round(totalporcoesServidas / registrosPeriodo.length);
   };
 
   const calcularMediaPratosDia = (dia) => {
     const registrosDoDia = dadosRefeicao.filter((d) => d.diaSemana === dia);
     if (registrosDoDia.length === 0) return 0;
-    const totalPratosServidos = registrosDoDia.reduce(
+    const totalporcoesServidas = registrosDoDia.reduce(
       (acc, item) =>
-        acc + parseInt(item.porcoesServidas || item.pratosServidos, 10),
+        acc + parseInt(item.porcoesServidas || item.porcoesServidas, 10),
       0
     );
-    return Math.round(totalPratosServidos / registrosDoDia.length);
+    return Math.round(totalporcoesServidas / registrosDoDia.length);
   };
 
   return (
@@ -250,8 +250,8 @@ const RelatorioPage = () => {
         <label className="block font-semibold mt-3">Pratos Servidos:</label>
         <input
           type="number"
-          name="pratosServidos"
-          value={novoRegistro.pratosServidos}
+          name="porcoesServidas"
+          value={novoRegistro.porcoesServidas}
           onChange={handleChange}
           className="w-full p-2 border rounded-md"
         />
