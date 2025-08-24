@@ -25,15 +25,15 @@ const RelatorioPage = () => {
   const [dadosRefeicao, setDadosRefeicao] = useState([]);
 
   useEffect(() => {
-    buscarDadosRefeicao()
-      .then((res) => {
-        setDadosRefeicao(res.data);
-        console.log("Recebido do backend:", res.data); 
-      })
-      .catch((err) => {
-        console.warn("Erro ao conectar com o backend.", err);
-      });
-  }, []);
+  buscarDadosRefeicao()
+    .then((res) => {
+      setDadosRefeicao(res.data);
+      console.log("Recebido do backend:", res.data); 
+    })
+    .catch((err) => {
+      console.warn("Erro ao conectar com o backend.", err);
+    });
+}, []);
 
   const [mostrarGraficos, setMostrarGraficos] = useState(true);
   const [mostrarModal, setMostrarModal] = useState(false);
@@ -145,7 +145,7 @@ const RelatorioPage = () => {
 
   return (
     <motion.div className="min-h-screen bg-white text-gray-900 flex flex-col items-center justify-start">
-      {/* Header */}
+     
       <div className="w-full bg-[#732457] text-white px-8 py-4 flex items-center justify-between shadow-lg">
         <h1 className="text-2xl font-bold">
           Relatórios de Consumo & Estatísticas
@@ -159,7 +159,7 @@ const RelatorioPage = () => {
         </button>
       </div>
 
-      {/* Modal de confirmação */}
+     
       {mostrarModal && (
         <motion.div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-80 text-center">
@@ -177,7 +177,7 @@ const RelatorioPage = () => {
         </motion.div>
       )}
 
-      {/* Formulário para adicionar registros */}
+      
       <motion.div className="mt-6 bg-gray-100 p-6 rounded-lg shadow-lg w-3/5">
         <h2 className="text-lg font-bold text-[#732457]">
           Adicionar Registro Diário
@@ -280,7 +280,7 @@ const RelatorioPage = () => {
                 className="mt-8 bg-gray-100 p-6 rounded-lg shadow-lg w-3/5"
               >
                 <h2 className="text-lg font-bold text-[#732457] mb-4">{dia}</h2>
-                {/* Listar todos os registros daquele dia */}
+                
                 {registrosDia.map((registro, idx) => (
                   <div
                     key={registro.id || `${dia}-${registro.periodo}-${idx}`}
@@ -298,10 +298,10 @@ const RelatorioPage = () => {
                   </div>
                 ))}
 
-                {/* Gráfico por dia */}
+               
                 <GraficoSemanal dados={registrosDia} />
 
-                {/* Médias */}
+               
                 <div className="mt-4 bg-white p-4 rounded-lg shadow-lg text-center">
                   <h3 className="text-md font-bold text-[#732457]">
                     Média de Pratos Servidos por Período

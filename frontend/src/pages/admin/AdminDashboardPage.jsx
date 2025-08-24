@@ -23,10 +23,10 @@ const AdminDashboardPage = () => {
     navigate("/admin/login");
   };
 
-  // Adiciona ou atualiza usuário
+  
   const handleFormSubmit = async (userData) => {
     if (editingUser) {
-      // Atualize conforme o backend suportar edição!
+      
       updateUser({ ...editingUser, ...userData });
       alert("Usuário atualizado com sucesso!");
       setEditingUser(null);
@@ -37,12 +37,12 @@ const AdminDashboardPage = () => {
     setShowAddForm(false);
   };
 
-  // Ativa/Inativa usuário via backend
+ 
   const handleToggleStatus = (userId, statusUsuario) => {
     toggleUserStatus(userId, statusUsuario === "ATIVO");
   };
 
-  // Exclui usuário via backend
+ 
   const handleDeleteUser = (userId, userName) => {
     if (window.confirm(`Tem certeza que deseja excluir "${userName}"? Esta ação não pode ser desfeita.`)) {
       deleteUser(userId);
@@ -97,7 +97,7 @@ const AdminDashboardPage = () => {
           )}
         </AnimatePresence>
 
-        {/* Exibição da lista de usuários ajustada */}
+        
         <div className="mt-8">
           {users.length > 0 ? (
             <div className="bg-white p-6 rounded-lg shadow-lg overflow-x-auto">

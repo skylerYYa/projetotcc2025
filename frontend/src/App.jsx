@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'r
 import { UserProvider } from "./contexts/UserContext";
 import { AnimatePresence } from 'framer-motion';
 
-// Componentes de página
+
 import AdminLoginPage from './pages/admin/AdminLoginPage';
 import AdminDashboardPage from './pages/admin/AdminDashboardPage';
 import RelatorioPage from './pages/RelatorioPage';

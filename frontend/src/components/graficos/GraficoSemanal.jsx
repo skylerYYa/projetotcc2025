@@ -1,91 +1,35 @@
-import React from "react";
-import { Bar } from "react-chartjs-2";
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Tooltip,
-  Legend,
-} from "chart.js";
+import { ResponsiveContainer, BarChart, Bar, CartesianGrid, XAxis, YAxis, Tooltip } from "recharts";
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
+function GraficoSemanal({ dados }) {
+  
+  const registros = Array.isArray(dados) ? dados : [];
 
-const GraficoSemanal = ({ dados }) => {
-   console.log("Dados recebidos pelo gráfico:", dados);
-  if (!dados || dados.length === 0) {
-    return <div className="w-full bg-white p-2 rounded-lg shadow text-center text-[#732457]">Nenhum dado para exibir.</div>;
+ 
+  const PERIODOS = ["Manha", "Tarde", "Noite"];
+  const dadosAgrupados = PERIODOS.map(periodo => {
+    const registrosPeriodo = registros.filter(r => r.periodo === periodo);
+    const totalPorcoes = registrosPeriodo.reduce(
+      (acc, item) => acc + (Number(item.porcoesServidas) || 0), 0
+    );
+    return { periodo, porcoesServidas: totalPorcoes };
+  });
+
+ 
+  if (!registros.length) {
+    return <div className="text-center text-gray-500">Sem dados para exibir o gráfico.</div>;
   }
 
-  const periodos = ["Manha", "Tarde", "Noite"];
-  const labels = periodos;
-
-  const pratosPorPeriodo = periodos.map((periodo) => {
-    const registrosPeriodo = dados.filter((d) => d.periodo === periodo);
-    const total = registrosPeriodo.reduce(
-  (acc, item) => acc + (parseInt(item.porcoesServidas ?? item.pratosServidos ?? 0, 10) || 0),
-  0
-);
-    return total;
-  });
-
-  const alunosPorPeriodo = periodos.map((periodo) => {
-    const registrosPeriodo = dados.filter((d) => d.periodo === periodo);
-    const total = registrosPeriodo.reduce(
-      (acc, item) => acc + (parseInt(item.alunosPresentes ?? 0, 10) || 0),
-      0
-    );
-    return total;
-  });
-
-  const data = {
-    labels,
-    datasets: [
-      {
-        label: "Pratos Servidos",
-        data: pratosPorPeriodo,
-        backgroundColor: "#a64182",
-      },
-      {
-        label: "Alunos Presentes",
-        data: alunosPorPeriodo,
-        backgroundColor: "#732457",
-      },
-    ],
-  };
-
-  const options = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: "top",
-        labels: { color: "#732457" },
-      },
-      title: {
-        display: true,
-        text: "Consumo por Período",
-        color: "#732457",
-        font: { size: 18 },
-      },
-    },
-    scales: {
-      x: {
-        ticks: { color: "#732457", font: { size: 14 } },
-        grid: { color: "#eee" },
-      },
-      y: {
-        beginAtZero: true,
-        ticks: { color: "#732457", font: { size: 14 } },
-        grid: { color: "#eee" },
-      },
-    },
-  };
-
   return (
-    <div className="w-full bg-white p-2 rounded-lg shadow">
-      <Bar data={data} options={options} />
-    </div>
+    <ResponsiveContainer width="100%" height={250}>
+      <BarChart data={dadosAgrupados}>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="periodo" />
+        <YAxis />
+        <Tooltip />
+        <Bar dataKey="porcoesServidas" fill="#732457" />
+      </BarChart>
+    </ResponsiveContainer>
   );
-};
+}
 
 export default GraficoSemanal;

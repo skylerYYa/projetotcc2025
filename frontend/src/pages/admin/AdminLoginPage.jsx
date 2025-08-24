@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import Logo from '../../components/common/Logo';
 import { ArrowRightOnRectangleIcon, UserIcon, KeyIcon } from '@heroicons/react/24/outline';
 
-// Importando a imagem PNG local
+
 const adminLoginSideImageUrl = new URL('../../assets/fundo.png', import.meta.url).href;
 
 const pageVariants = {
@@ -33,7 +33,7 @@ const AdminLoginPage = () => {
     if (username === 'admin' && password === 'password123') {
       localStorage.setItem('adminAuthToken', 'fakeAdminToken');
 
-      // Redireciona diretamente para a Dashboard após login bem-sucedido
+    
       navigate('/dashboard', { replace: true });
     } else {
       setError('Usuário ou senha de administrador inválidos.');

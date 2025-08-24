@@ -115,7 +115,7 @@ const AddUserForm = ({ onCancel, initialData, isSubmitting }) => {
         {isEditing ? "Editar Usuário" : "Cadastrar Novo Usuário"}
       </h3>
 
-      {/* Nome */}
+    
       <div>
         <label className={labelClass}>Nome</label>
         <input
@@ -127,7 +127,7 @@ const AddUserForm = ({ onCancel, initialData, isSubmitting }) => {
         />
       </div>
 
-      {/* Email */}
+      
       <div>
         <label className={labelClass}>Email</label>
         <input
@@ -139,7 +139,7 @@ const AddUserForm = ({ onCancel, initialData, isSubmitting }) => {
         />
       </div>
 
-      {/* Senha */}
+    
       <div>
         <label className={labelClass}>Senha</label>
         <input
@@ -151,7 +151,7 @@ const AddUserForm = ({ onCancel, initialData, isSubmitting }) => {
         />
       </div>
 
-      {/* Data de nascimento */}
+     
       <div>
         <label className={labelClass}>Data de Nascimento</label>
         <input
@@ -162,7 +162,7 @@ const AddUserForm = ({ onCancel, initialData, isSubmitting }) => {
         />
       </div>
 
-      {/* Função/Cargo */}
+      
       <div>
         <label className={labelClass}>Função/Cargo</label>
         <select
@@ -190,7 +190,7 @@ const AddUserForm = ({ onCancel, initialData, isSubmitting }) => {
         </div>
       )}
 
-      {/* Ativo/Inativo */}
+      
       <div className="flex items-center">
         <input
           id="isActive"
@@ -204,7 +204,7 @@ const AddUserForm = ({ onCancel, initialData, isSubmitting }) => {
         </label>
       </div>
 
-      {/* Botões */}
+      
       <div className="flex gap-4 mt-4">
         <button
           type="submit"
