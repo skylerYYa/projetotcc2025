@@ -63,8 +63,37 @@ public class UsuarioService {
 		return null;
 	}
 
+	@Transactional
 	public Usuario login(String email, String senha) {
-		// TODO: implementar login real
+		Usuario usuario = usuarioRepository.findByEmail(email);
+
+		if (usuario != null) {
+			if (!usuario.getStatusUsuario().equals("INATIVO")) {
+				byte[] decodedPass = Base64.getDecoder()
+												.decode(usuario.getSenha());
+				
+				if (new String(decodedPass).equals(senha)) {
+					return usuario;
+				}
+			}
+		}
+		return null;
+	}
+	
+	@Transactional
+	public Usuario loginMobile(String rm, String senha) {
+		Usuario usuario = usuarioRepository.findByRm(rm);
+
+		if (usuario != null) {
+			if (!usuario.getStatusUsuario().equals("INATIVO")) {
+				byte[] decodedPass = Base64.getDecoder()
+												.decode(usuario.getSenha());
+				
+				if (new String(decodedPass).equals(senha)) {
+					return usuario;
+				}
+			}
+		}
 		return null;
 	}
 

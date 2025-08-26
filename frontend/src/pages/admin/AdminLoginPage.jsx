@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Logo from '../../components/common/Logo';
 import { ArrowRightOnRectangleIcon, UserIcon, KeyIcon } from '@heroicons/react/24/outline';
+import UsuarioService from "../../services/_UsuarioService";
 
 
 const adminLoginSideImageUrl = new URL('../../assets/fundo.png', import.meta.url).href;
@@ -22,23 +23,58 @@ const pageTransition = {
 
 const AdminLoginPage = () => {
   const navigate = useNavigate();
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
 
-  const handleAdminLogin = (e) => {
-    e.preventDefault();
-    setError('');
-
-    if (username === 'admin' && password === 'password123') {
-      localStorage.setItem('adminAuthToken', 'fakeAdminToken');
-
-    
-      navigate('/dashboard', { replace: true });
-    } else {
-      setError('Usuário ou senha de administrador inválidos.');
+    const goto = () => {
+        navigate("/home");
     }
-  };
+
+    const backto = () => {
+        navigate("/");
+    }
+
+    const [formData, setFormData] = useState({});
+    const [message, setMessage] = useState();
+    const [error, setError] = useState();
+
+    const handleChange = (e) => {
+        const name = e.target.name;
+        const value = e.target.value;
+        setFormData(formData => ({ ...formData, [name]: value }))
+    }
+
+    const editar = (id) => {
+        navigate(`/usuarioeditar/` + id)
+    }
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        setMessage("");
+        UsuarioService.signin(formData.email, formData.password).then(
+            () => {
+                const userJson = localStorage.getItem("user");
+                const user = JSON.parse(userJson || '{}');
+                if (user.statusUsuario == 'ATIVO') {
+                    navigate("/dashboard");
+                } else if (user.statusUsuario == 'TROCAR_SENHA') {
+                    navigate(`/newpass/` + user.id);
+                    //window.location.reload(); ordnael@email.com.br
+                }
+
+            },
+            (error) => {
+                const respMessage =
+                    (error.response &&
+                        error.response.data &&
+                        error.response.data.message) ||
+                    error.message ||
+                    error.toString();
+
+                setMessage(respMessage);
+            }
+
+        );
+    };
+
 
   return (
     <motion.div
@@ -82,7 +118,7 @@ const AdminLoginPage = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            onSubmit={handleAdminLogin} className="space-y-6"
+            onSubmit={handleSubmit} className="space-y-6"
           >
             <div className="relative">
               <label className="sr-only" htmlFor="username">Usuário</label>
@@ -94,8 +130,9 @@ const AdminLoginPage = () => {
                 id="username"
                 type="text"
                 placeholder="Usuário (admin)"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                name="email"
+                value={formData.email || ""}
+                onChange={handleChange}
                 required
               />
             </div>
@@ -109,13 +146,14 @@ const AdminLoginPage = () => {
                 id="password"
                 type="password"
                 placeholder="Senha (password123)"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                name="password"
+                value={formData.password || ""}
+                onChange={handleChange}
                 required
               />
             </div>
 
-            {error && <p className="text-red-600 text-sm font-medium text-center py-2 px-3 bg-red-100 border border-red-300 rounded-md">{error}</p>}
+            {message && <p className="text-red-600 text-sm font-medium text-center py-2 px-3 bg-red-100 border border-red-300 rounded-md">{message}</p>}
             
             <div className="pt-2">
               <motion.button

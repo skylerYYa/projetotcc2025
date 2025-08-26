@@ -26,7 +26,7 @@ const AppContent = () => {
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
           <Route path="/login" element={<AdminLoginPage />} />
-          <Route path="/dashboard" element={<ProtectedRoute><AdminDashboardPage /></ProtectedRoute>} />
+          <Route path="/dashboard" element={<AdminDashboardPage />} />
           <Route path="/relatorio" element={<ProtectedRoute><RelatorioPage /></ProtectedRoute>} />
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>

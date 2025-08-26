@@ -12,7 +12,6 @@ import br.itb.projeto.cdmprojeto.service.UsuarioService;
 
 @RestController
 @RequestMapping("/usuario")
-@CrossOrigin(origins = "http://localhost:5173")
 public class UsuarioController {
 
 	private final UsuarioService usuarioService;
@@ -46,6 +45,18 @@ public class UsuarioController {
 		throw new ResourceNotFoundException("Dados Incorretos!!!");
 	}
 
+	@PostMapping("/login-mobile")
+	public ResponseEntity<?> loginMobile(@RequestBody Usuario usuario) {
+
+		Usuario _usuario = usuarioService.loginMobile(usuario.getRm(), usuario.getSenha());
+
+		if (_usuario != null) {
+			return ResponseEntity.ok().body(_usuario);
+		} 
+
+		throw new ResourceNotFoundException("Dados Incorretos!!!");
+	}
+	
 	@DeleteMapping("/delete/{id}")
 	public ResponseEntity<?> deleteUsuario(@PathVariable long id) {
 		boolean deleted = usuarioService.deleteUsuario(id);
