@@ -15,24 +15,22 @@ const labelClass = "block text-sm font-medium text-slate-700 mb-1.5";
 const AddUserForm = ({ onCancel, initialData, isSubmitting }) => {
   const { refreshUsersFromBackend, updateUser } = useUsers();
 
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [senha, setSenha] = useState("");
-  const [birthdate, setBirthdate] = useState("");
-  const [role, setRole] = useState("");
-  const [rm, setRm] = useState("");
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [senha, setSenha] = useState('');
+  const [birthdate, setBirthdate] = useState('');
+  const [role, setRole] = useState('');
   const [isActive, setIsActive] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
 
   const populateForm = (data) => {
     if (data) {
       setIsEditing(true);
-      setName(data.nome || "");
-      setEmail(data.email || "");
-      setBirthdate(data.dataNascimento || "");
-      setRole(data.nivelAcesso || "");
-      setRm(data.rm || "");
-      setIsActive(data.ativo !== undefined ? data.ativo : true);
+      setName(data.name || '');
+      setEmail(data.email || '');
+      setBirthdate(data.birthdate || '');
+      setRole(data.role || '');
+      setIsActive(data.active !== undefined ? data.active : true);
     }
   };
 
@@ -46,12 +44,10 @@ const AddUserForm = ({ onCancel, initialData, isSubmitting }) => {
   }, [initialData]);
 
   const clearForm = (notifyCancel = true) => {
-    setName("");
-    setEmail("");
-    setSenha("");
-    setBirthdate("");
-    setRole("");
-    setRm("");
+    setName('');
+    setEmail('');
+    setBirthdate('');
+    setRole('');
     setIsActive(true);
     setIsEditing(false);
     if (notifyCancel && onCancel) {
@@ -72,35 +68,21 @@ const AddUserForm = ({ onCancel, initialData, isSubmitting }) => {
       nome: name,
       email: email,
       dataNascimento: birthdate,
-      nivelAcesso: role,
-      rm: rm,
-      senha: senha,
-      statusUsuario,
+      cargo: role,
+      ativo: isActive,
+      senha: senha, 
     };
 
-    if (isEditing) {
-      updateUser(initialData.id, userData)
-        .then(() => {
-          alert("Usuário atualizado com sucesso!");
-          refreshUsersFromBackend();
-          clearForm(false);
-        })
-        .catch((err) => {
-          console.error("Erro ao atualizar usuário:", err);
-          alert("Erro ao atualizar no banco.");
-        });
-    } else {
-      cadastrarUsuario(userData)
-        .then(() => {
-          alert("Usuário cadastrado com sucesso!");
-          refreshUsersFromBackend();
-          clearForm(false);
-        })
-        .catch((err) => {
-          console.error("Erro ao cadastrar usuário:", err);
-          alert("Erro ao salvar no banco. Verifique os dados ou a conexão.");
-        });
-    }
+    cadastrarUsuario(userData)
+      .then(() => {
+        alert("Usuário cadastrado com sucesso!");
+        refreshUsersFromBackend(); 
+        clearForm(false);
+      })
+      .catch((err) => {
+        console.error("Erro ao cadastrar usuário:", err);
+        alert("Erro ao salvar no banco. Verifique os dados ou a conexão.");
+      });
   };
 
   return (
@@ -114,8 +96,8 @@ const AddUserForm = ({ onCancel, initialData, isSubmitting }) => {
       <h3 className="text-xl sm:text-2xl font-semibold text-slate-800 mb-6 border-b border-slate-200 pb-4">
         {isEditing ? "Editar Usuário" : "Cadastrar Novo Usuário"}
       </h3>
-
-    
+      
+      {/* Nome */}
       <div>
         <label className={labelClass}>Nome</label>
         <input
@@ -168,14 +150,23 @@ const AddUserForm = ({ onCancel, initialData, isSubmitting }) => {
         <select
           className={inputClass}
           value={role}
-          onChange={(e) => setRole(e.target.value)}
-        >
-          <option value="">Selecione uma função</option>
-          <option value="ADMIN">ADMIN</option>
-          <option value="FUNCIONARIO">FUNCIONÁRIO</option>
-          <option value="ALUNO">ALUNO</option>
-        </select>
+          onChange={e => setRole(e.target.value)}
+          placeholder="Ex: Administrador, Funcionário, Aluno"
+        />
       </div>
+
+      {role === "ALUNO" && (
+        <div>
+          <label className={labelClass}>RM do Aluno</label>
+          <input
+            className={inputClass}
+            type="text"
+            value={rm}
+            onChange={e => setRm(e.target.value)}
+            placeholder="Digite o RM do aluno"
+          />
+        </div>
+      )}
 
       {role === "ALUNO" && (
         <div>

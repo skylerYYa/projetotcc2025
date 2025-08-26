@@ -52,14 +52,7 @@ public class UsuarioService {
 	}
 
 	public Usuario save(Usuario usuario) {
-		Usuario _usuario = usuarioRepository.findByEmail(usuario.getEmail());
-		if (_usuario == null) {
-			String senha = Base64.getEncoder().encodeToString(usuario.getSenha().getBytes());
-			usuario.setSenha(senha);
-			usuario.setDataCadastro(LocalDateTime.now());
-			usuario.setStatusUsuario("ATIVO");
-			return usuarioRepository.save(usuario);
-		}
+		// TODO Auto-generated method stub
 		return null;
 	}
 
