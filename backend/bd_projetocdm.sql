@@ -1,4 +1,4 @@
-﻿USE master IF EXISTS(select * from sys.databases where name='bd_projetocdm') 
+﻿ USE master IF EXISTS(select * from sys.databases where name='bd_projetocdm') 
 DROP DATABASE bd_projetocdm
 GO 
 -- CRIAR UM BANCO DE DADOS
@@ -29,10 +29,12 @@ VALUES (null, 'Fulano da Silva','09/04/1989', 'fulano@email.com.br', 'MTIzNDU2Nz
 INSERT Usuario (rm, nome, dataNascimento,  email, senha, nivelAcesso, foto, dataCadastro, statusUsuario)
 VALUES (null,'Beltrana de Sa','22/08/2009', 'beltrana@email.com.br', 'MTIzNDU2Nzg=', 'FUNCIONARIO', NULL, GETDATE(), 'ATIVO')
 INSERT Usuario (rm, nome, dataNascimento,  email, senha, nivelAcesso, foto, dataCadastro, statusUsuario)
-VALUES ('89937','Sicrana de Oliveira','12/10/2000', 'sicrana@email.com.br', 'MTIzNDU2Nzg=', 'ALUNO', NULL, GETDATE(), 'ATIVO')
+VALUES ('89937','Juliana Machado', '12/10/2000', 'sicrana@email.com.br', 'MjkxMDIwMDc=', 'ALUNO', NULL, GETDATE(), 'ATIVO')
 INSERT Usuario (rm, nome, dataNascimento,  email, senha, nivelAcesso, foto, dataCadastro, statusUsuario)
-VALUES ('89976','Ordnael Zurc','10/09/1987', 'ordnael@email.com.br', 'MTIzNDU2Nzg=', 'ALUNO', NULL, GETDATE(), 'ATIVO')
+VALUES ('89976','Luiciano Pereira','10/09/1987', 'ordnael@email.com.br', 'MjIwOTIwMDc=', 'ALUNO', NULL, GETDATE(), 'ATIVO')
+
 GO
+DELETE FROM Usuario WHERE ID =6;
 
 CREATE TABLE Refeicao 
 (
