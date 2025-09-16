@@ -1,12 +1,10 @@
 package br.itb.projeto.cdmprojeto.model.repository;
 
-import java.util.Optional;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface FormularioRepository extends JpaRepository<FormularioRepository, Long> {
+import br.itb.projeto.cdmprojeto.model.entity.Formulario;
 
-
-  
+public interface FormularioRepository extends JpaRepository<Formulario, Long> {
+	
 }
 

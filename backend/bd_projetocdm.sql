@@ -68,22 +68,31 @@ CREATE TABLE DadosRefeicao
 	FOREIGN KEY (refeicao_id) REFERENCES Refeicao (id)
 );
 
-CREATE TABLE Questao 
+CREATE TABLE Formulario 
 (
-    id              INT IDENTITY,
-    enunciado       VARCHAR(200) NOT NULL,
-	tipo			VARCHAR(100) NOT NULL,
-	altA			VARCHAR(100) NULL,
-	altB			VARCHAR(100) NULL,
-	altC			VARCHAR(100) NULL,
-	altD			VARCHAR(100) NULL,
-	altE			VARCHAR(100) NULL,
-    dataCadastro    DATETIME NOT NULL,
+    id								INT IDENTITY,
+	usuario_id						INT	NOT NULL,
+	turno							VARCHAR(100) NOT NULL, -- MANHÃ, TARDE ou NOITE
+	frequenciaRefeicao				VARCHAR(100) NULL, -- Sempre, Eventualmente, Raramente, Nunca
+	pratosAgradaveis				VARCHAR(200) NULL,
+	pratosMenos						VARCHAR(200) NULL,
+	restricoes						VARCHAR(200) NULL,  
+	frequenciaSobremesa				VARCHAR(100) NULL, -- Sempre, Eventualmente, Raramente, Nunca
+	frequenciaCafe					VARCHAR(100) NULL, -- Sempre, Eventualmente, Raramente, Nunca
+    dataCadastro					SMALLDATETIME NOT NULL,
 
-	statusQuestao  VARCHAR(20)   NOT NULL, -- ATIVO ou INATIVO
+	statusFormulario				VARCHAR(20)   NOT NULL, -- ATIVO ou INATIVO
 
-	PRIMARY KEY (id)
-);
+	PRIMARY KEY (id),
+	FOREIGN KEY (usuario_id) REFERENCES Usuario (id) 
+)
+GO
+INSERT Formulario ( usuario_id, turno, frequenciaRefeicao, pratosAgradaveis, pratosMenos, restricoes, frequenciaSobremesa, frequenciaCafe, dataCadastro, statusFormulario) 
+VALUES (4, 'tarde', 'sempre', 'macarrao tal tal', 'peixe tal tal', 'tudo', 'Sempre', 'Raramente', GETDATE(), 'ATIVO')
+GO
+	
+SELECT * FROM Formulario
+
 
 CREATE TABLE Resposta 
 (
